@@ -8,9 +8,14 @@ tol=1e-5;  %relative tolerance for soft check
     %for fully determined systems, can do tol=1e-12
     %for overdetermined, get c close to 0, need tol=1e-5
     %regardless, residuals on actual predictions are double-precision roundoffs
+    %system 9 fails softtest because of the overdetermined numerical
+    %solution shape, not because of the upscaling algorithm; residuals OK
 resTol=1e-12; %relative tolerance on numerical residuals; 
     %needed for cases where numerical estimation of coefficients rank
     %deficient...
+    %have now registered some cases of residuals ~3e-12, so fails but fine,
+    %soft-test is passed in these cases; all pass if re-run: due to random
+    %variation in parameters.
 %%
 testSet=formTestSet();
 
@@ -45,6 +50,7 @@ for i=1:nTestSys
     testSet(i).passRes=all(cat(1,testSet(i).check(:).resTest));
 end
 
+%% Evaluation
 result=cat(1,testSet(:).passSoft);
 if all(result)
     fprintf(1,'All cases soft-tested successfully to rel. tol=%.3e\n',tol);
@@ -58,6 +64,6 @@ else
     fprintf(1,'Failed residual test in case %d\n',find(~result));
 end
 
-times=cat(1,testSet(:).time);
+times=cat(1,testSet(:).time); %times of upscaling, not solution; those are trivial.
 
 
