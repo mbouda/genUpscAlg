@@ -1,0 +1,16 @@
+function outs=defLidEqP(iSeg,collarCond,c1,c2,c5,inLayer)
+
+    psiXf=formLinkEq(iSeg,sprintf('psi0%d',iSeg),...
+        {sprintf('psiX%d',iSeg),collarCond,sprintf('psiL%d',inLayer)},...
+        [1/c5 -1 2-1/c5]);
+  
+    psiXb=formLinkEq(iSeg,sprintf('psiX%d',iSeg),...
+        {sprintf('psi0%d',iSeg),sprintf('G0%d',iSeg),sprintf('psiL%d',inLayer)},...
+        [c1 -c2 1-c1]);
+    
+   
+    outs=subsFor(psiXf,psiXb.depvar,...
+                psiXb.vars,psiXb.coefs);
+    outs=sumVars(outs); 
+    outs=numIsolDep(outs);
+end
