@@ -56,9 +56,10 @@ function testSet=formTestSet()
     testSet(12).inLayer=[1 2 2 3 4 5 6 7]';
     
 %% root crossing from deeper to shallower layer
+    %currently gets stuck at basal end of upward-oriented roots
 
-    testSet(13).parents=[0 1 2 3 3 4 5 6 8]';
-    testSet(13).inLayer=[1 2 3 3 3 4 2 5 6]';
+   testSet(13).parents=[0 1 2 3 3 4 5 6 8]';
+   testSet(13).inLayer=[1 2 3 3 3 4 2 5 6]';
 
 %% unclosed junction with targ acropetal to both legs:
 
