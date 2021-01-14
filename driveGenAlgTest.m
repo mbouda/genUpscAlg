@@ -34,8 +34,8 @@ for i=1:nTestSys
         'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp);
     testSet(i).sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
     
-    %keyboard calls at unresolved points in algorithm can be returned to execution by
-    %entering dbcont; should currenly only indicate unfinished parts of code
+    %keyboard calls should currenly only indicate unfinished parts of code
+    %noted in issues; can be returned to execution by entering dbcont.
     
     tic
     for j=1:testSet(i).nDomLayers
@@ -67,3 +67,8 @@ end
 times=cat(1,testSet(:).time); %times of upscaling, not solution; those are trivial.
 
 
+%% Outputs
+
+% Should probably come out in some recognisable form, e.g. C matrix from Jan's
+% approach... in this case, should look how that was constructed for
+% simple upscaled model in the case presented at LLN

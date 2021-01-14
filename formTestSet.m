@@ -56,19 +56,29 @@ function testSet=formTestSet()
     testSet(12).inLayer=[1 2 2 3 4 5 6 7]';
     
 %% root crossing from deeper to shallower layer
-    %currently gets stuck at basal end of upward-oriented roots
 
    testSet(13).parents=[0 1 2 3 3 4 5 6 8]';
    testSet(13).inLayer=[1 2 3 3 3 4 2 5 6]';
+   
+   %other cases: going up/down, w/ junction in layer or @ interface
+   %testSet(14).parents=[0 1 2 3 3 4 5 6 8]';
+   %testSet(14).inLayer=[1 2 3 3 3 4 2 5 6]';
+   
+   %or try useCRootBox outputs now?
 
-%% unclosed junction with targ acropetal to both legs:
+%% unclosed junction with targ acropetal to both legs (?):
 
 %     %subs Int going  down:
-%     testSet(10).parents=[0 1 2 3 3 4 5 6 7 8 9 10 11]';
-%     testSet(10).inLayer=[1 2 3 3 3 4 4 5 5 6 6 7 7]';
+%     testSet(14).parents=[0 1 2 3 3 4 5 6 7 8 9 10 11]';
+%     testSet(14).inLayer=[1 2 3 3 3 4 4 5 5 6 6 7 7]';
 
 %at connUD: maybe can't happen with only 2 legs? 
         %because approach is to bring psiL(D+1) up one leg & solve for 2 d.o.f. in other.
         
+%% Homologous systems
+
+    %try using the homolSys as constructed in synth code to make upscaled
+    %coeffs
+
 %% Add more to broaden generality of tests
 end
