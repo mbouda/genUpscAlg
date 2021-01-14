@@ -110,10 +110,6 @@ function lidEq=numPassLidDn(iSeg,prob,closeEqs,iLinkClose,extraEqs,iLinkExtra,li
                 if strcmp(sprintf('psiC'),lidEq.depvar)
                     lidEq=numIsolate(lidEq,sprintf('psi0%d',iSeg));
                 end
-            else
-                keyboard
-                %this should never happen: do not execute, not going down...
-                %If reliably does not, can take this option out for efficiency
             end
             
         end
