@@ -1,4 +1,4 @@
-function [layerEqs,prob,nLayers]=numConnUDClr(iSeg,layerEqs,lidEqs,extraEqs,iLinkExtra,collarCond,nLayers,prob,termed,Kx,parents)
+function [layerEqs,prob,nLayers]=numConnUDClr(iSeg,layerEqs,closeEqs,iLinkClose,lidEqs,extraEqs,iLinkExtra,collarCond,nLayers,prob,termed,Kx,parents)
 
     par=parents(iSeg);
     
@@ -59,29 +59,44 @@ function [layerEqs,prob,nLayers]=numConnUDClr(iSeg,layerEqs,lidEqs,extraEqs,iLin
         sibLinkI=ismember(prob.iLinks,iSibs);
         sib=setdiff(iSibs,iSeg);
         if any(termed(sibLinkI))
-         %if closed: use closeEq.
-         %translate this:
+            iClEq=iLinkClose==sib;
              switch collarCond
                 case 'psiC'
-                keyboard
-                    %translate commented analytical to numerical code 
-                    %plus need to add propagation of the lid equations...
-
-%                 massCons=isolate(base.botFlux(par),defs.G0(par));
-% 
-% 
-%                 sib=setdiff(find(sibs),iSeg);
-%                 base.fclose(sib)=isolate(base.fclose(sib),defs.G1(sib));
-% 
-% 
-%                 for j=prob.kLayers'
-%                     base.avg(j)=subsEq(base.avg(j),massCons);
-%                     base.avg(j)=subsEq(base.avg(j),base.fclose(sib));
-%                     base.avg(j)=subs(base.avg(j),defs.psi1(sib),defs.psi1(iSeg));
-%                     base.avg(j)=subs(base.avg(j),defs.psi0(par),defs.psi1(iSeg));
-% 
-%                 end
-                
+                    massCons=formLinkEq(iSeg,sprintf('G0%d',par),...
+                            {sprintf('G1%d',iSibs(1)),sprintf('G1%d',iSibs(2))},...
+                            [Kx(iSibs(1))/Kx(par) Kx(iSibs(2))/Kx(par)]);
+                    massCons=subsFor(massCons,closeEqs(iClEq).depvar,...
+                                closeEqs(iClEq).vars,closeEqs(iClEq).coefs);
+                    massCons.vars{strcmp(massCons.vars,sprintf('psi1%d',sib))}=sprintf('psi1%d',iSeg);
+                    massCons=subsFor(massCons,sprintf('psi1%d',iSeg),...
+                                lidEqs(parLid).vars,lidEqs(parLid).coefs);
+                    massCons=sumVars(massCons);
+                    massCons=numIsolDep(massCons);
+                    for j=1:nLayers
+                        if ismember(closeEqs(iClEq).depvar,layerEqs(j).vars)
+                            layerEqs(j)=subsFor(layerEqs(j),closeEqs(iClEq).depvar,...
+                                closeEqs(iClEq).vars,closeEqs(iClEq).coefs);
+                            layerEqs(j)=sumVars(layerEqs(j));
+                        end
+                        if ismember(sprintf('psi1%d',sib),layerEqs(j).vars)
+                            layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',sib))}=sprintf('psi1%d',iSeg);
+                            layerEqs(j)=sumVars(layerEqs(j));
+                        end
+                        if ismember(sprintf('psi1%d',iSeg),layerEqs(j).vars)
+                            layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',iSeg))}=sprintf('psi0%d',par);
+                            layerEqs(j)=sumVars(layerEqs(j));
+                        end
+                        if ismember(lidEqs(parLid).depvar,layerEqs(j).vars)
+                            layerEqs(j)=subsFor(layerEqs(j),lidEqs(parLid).depvar,...
+                                lidEqs(parLid).vars,lidEqs(parLid).coefs);
+                            layerEqs(j)=sumVars(layerEqs(j));
+                        end
+                        if ismember(massCons.depvar,layerEqs(j).vars)
+                            layerEqs(j)=subsFor(layerEqs(j),massCons.depvar,...
+                                massCons.vars,massCons.coefs);
+                            layerEqs(j)=sumVars(layerEqs(j));
+                        end
+                    end                    
                 case 'GC'
                     keyboard
             end

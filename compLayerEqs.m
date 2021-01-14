@@ -1,5 +1,14 @@
 function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,parents,nLayers)
 
+    topTerms=intersect(prob.terms,prob.tops);
+    topTermSibs=[];
+    if any(topTerms)
+        prob.tops(prob.tops==topTerms)=[];
+        for j=topTerms'
+            topTermSibs=cat(2,topTermSibs,setdiff(find(parents==parents(j)),j));
+        end
+    end
+
     j=prob.tops;
     topLK=ismember(prob.kLayers,inLayer(j));
     layerEqs(topLK)=subsTops(j,iLayer,layerEqs(topLK),c1(j),c2(j),prob.kLayers(topLK),inLayer(j),numel(j));
@@ -82,6 +91,8 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
             %will need to be both up AND down!
         end %if ==0, no need to execute anything
     end
+    downInts=cat(2,downInts,topTermSibs);
+    
     upInts=sort(upInts,'descend');
     downInts=sort(downInts,'ascend');
 

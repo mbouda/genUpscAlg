@@ -4,6 +4,15 @@ function layerEqs=compClrLyrEqs(iLayer,collarCond,layerEqs,prob,b2,c1,c2,c5,Kx,i
     baseSegs=layerSegs(parents(layerSegs)==0);
     layerSegs=union(layerSegs(inLayer(parents(setdiff(layerSegs,baseSegs)))~=iLayer),baseSegs);
 
+    topTerms=intersect(prob.terms,prob.tops);  %may always be empty here... eliminate for efficiency?
+    topTermSibs=[];
+    if any(topTerms)
+        prob.tops(prob.tops==topTerms)=[];
+        for j=topTerms'
+            topTermSibs=cat(2,topTermSibs,setdiff(find(parents==parents(j)),j));
+        end
+    end
+    
     j=setdiff(prob.tops,baseSegs);
     topLK=ismember(prob.kLayers,inLayer(j));
     [layerEqs(topLK),lidEqs]=subsCollar(j,collarCond,layerEqs(topLK),c1(j),c2(j),c5(j),b2(j),prob.kLayers(topLK),inLayer(j),numel(j));
@@ -125,7 +134,7 @@ function layerEqs=compClrLyrEqs(iLayer,collarCond,layerEqs,prob,b2,c1,c2,c5,Kx,i
             [layerEqs,prob,nLayers]=numSubsBase(j,prob,collarCond,closeEqs,iLinkClose,extraEqs,iLinkExtra,layerEqs,nLayers,Kx,b2,c1,c2,c5,termed,parents,inLayer);
         else
             %need to add extraEqs mechanisms into the following function 
-            [layerEqs,prob,nLayers]=numConnUDClr(j,layerEqs,lidEqs,extraEqs,iLinkExtra,collarCond,nLayers,prob,termed,Kx,parents);
+            [layerEqs,prob,nLayers]=numConnUDClr(j,layerEqs,closeEqs,iLinkClose,lidEqs,extraEqs,iLinkExtra,collarCond,nLayers,prob,termed,Kx,parents);
         end
     end
 

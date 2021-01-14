@@ -1,7 +1,7 @@
 function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLayer)
 
     prob=numProbDef(iLayer,lyrArch.acroLrs,lyrArch.nxtLr,lyrArch.basiLrs,lyrArch.prvLr,parents,inLayer);
-     
+    
     nLayers=size(prob.kLayers,1);
     layerEqs=defLayerEqs(nLayers,prob.kLayers,inLayer,params.KrS);  %function that sets them up with KrS...
                         %should move into compLayerEqs functions for easier

@@ -53,7 +53,7 @@ function testSet=formTestSet()
 %% termed dtr off collar segment
 
     testSet(12).parents=[0 1 1 2 4 5 6 7]';
-    testSet(12).inLayer=[1 1 1 2 3 4 5 6]';
+    testSet(12).inLayer=[1 2 2 3 4 5 6 7]';
     
 %% root crossing from deeper to shallower layer
 
