@@ -50,6 +50,16 @@ function testSet=formTestSet()
     testSet(9).parents=[0 1 2 3 3 4 5 5 6 7 7 8 9 10 11 12 13 14 15 16 17 18 19 20 22 23 24 25 26]';
     testSet(9).inLayer=[1 2 3 3 3 4 3 3 5 3 3 4 6 4 4 5 7 5 5 6 8 6 6 7 7 7 8 8 8]';
 
+%% termed dtr off collar segment
+
+    testSet(12).parents=[0 1 1 2 3 4 5 6];
+    testSet(12).inLayer=[1 1 1 2 3 4 5 6];
+    
+%% root crossing from deeper to shallower layer
+
+    testSet(13).parents=[0 1 2 3 3 4 5 6 8];
+    testSet(13).inLayer=[1 2 3 3 3 4 2 5 6];
+
 %% unclosed junction with targ acropetal to both legs:
 
 %     %subs Int going  down:
