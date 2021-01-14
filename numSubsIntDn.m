@@ -21,9 +21,10 @@ function [layerEqs,prob,nLayers]=numSubsIntDn(iSeg,prob,closeEqs,iLinkClose,extr
             if ismember(massCons.depvar,layerEqs(j).vars)
                 layerEqs(j)=subsFor(layerEqs(j),massCons.depvar,...
                             massCons.vars,massCons.coefs);
-                if ismember(sprintf('psi0%d',par),layerEqs(j).vars)
-                    layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi0%d',par))}=sprintf('psi1%d',iSeg);
-                end
+                layerEqs(j)=sumVars(layerEqs(j));
+            end
+            if ismember(sprintf('psi0%d',par),layerEqs(j).vars)
+                layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi0%d',par))}=sprintf('psi1%d',iSeg);
                 layerEqs(j)=sumVars(layerEqs(j));
             end
             if ismember(sprintf('G1%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi1%d',iSeg),layerEqs(j).vars)
@@ -43,21 +44,27 @@ function [layerEqs,prob,nLayers]=numSubsIntDn(iSeg,prob,closeEqs,iLinkClose,extr
                 if ismember(massCons.depvar,layerEqs(j).vars)
                     layerEqs(j)=subsFor(layerEqs(j),massCons.depvar,...
                                 massCons.vars,massCons.coefs);
-                    layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi0%d',par))}=sprintf('psi1%d',iSeg);
                     layerEqs(j)=sumVars(layerEqs(j));        
+                end
+                if ismember(sprintf('psi0%d',par),layerEqs(j).vars)
+                    layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi0%d',par))}=sprintf('psi1%d',iSeg);
                 end
                 if ismember(sprintf('G1%d',sib),layerEqs(j).vars)
                     layerEqs(j)=subsFor(layerEqs(j),closeEqs(iLinkClose==sib).depvar,...
                                 closeEqs(iLinkClose==sib).vars,...
                                 closeEqs(iLinkClose==sib).coefs);
                     layerEqs(j)=sumVars(layerEqs(j));
+                end
+                if ismember(sprintf('psi1%d',sib),layerEqs(j).vars)
                     layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',sib))}=sprintf('psi1%d',iSeg);
                     layerEqs(j)=sumVars(layerEqs(j));
                 end
-                if ismember(sprintf('G1%d',iSeg),layerEqs(j).vars)
+                if ismember(sprintf('G1%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi1%d',iSeg),layerEqs(j).vars)
                     layerEqs(j)=numPassDn(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
                 elseif ismember(sprintf('psi1%d',iSeg),layerEqs(j).vars)
                     layerEqs(j)=numPassDnPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+                elseif ismember(sprintf('G1%d',iSeg),layerEqs(j).vars)
+                    layerEqs(j)=numPassDnG(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg));
                 end
             end
         else
@@ -93,10 +100,12 @@ function [layerEqs,prob,nLayers]=numSubsIntDn(iSeg,prob,closeEqs,iLinkClose,extr
                         layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',sib))}=sprintf('psi1%d',iSeg);
                         layerEqs(j)=sumVars(layerEqs(j));
                     end
-                    if ismember(sprintf('G1%d',iSeg),layerEqs(j).vars)
+                    if ismember(sprintf('G1%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi1%d',iSeg),layerEqs(j).vars)
                         layerEqs(j)=numPassDn(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
                     elseif ismember(sprintf('psi1%d',iSeg),layerEqs(j).vars)
                         layerEqs(j)=numPassDnPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+                    elseif ismember(sprintf('G1%d',iSeg),layerEqs(j).vars) 
+                        layerEqs(j)=numPassDnG(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg));
                     end
                     if ismember(layerEqs(j).depvar,layerEqs(j).vars)
                         layerEqs(j)=numIsolDep(layerEqs(j));

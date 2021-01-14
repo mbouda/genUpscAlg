@@ -125,7 +125,6 @@ function [layerEqs,prob,nLayers]=numConnUDClr(iSeg,layerEqs,closeEqs,iLinkClose,
                          massCons=numIsolate(massCons,sprintf('G1%d',sib)); 
                          for j=nLayers:-1:1
                              if ismember(sprintf('G1%d',sib),layerEqs(j).vars) 
-                                 %making strong assumption 
                                  layerEqs(j)=subsFor(layerEqs(j),massCons.depvar,massCons.vars,...
                                                             massCons.coefs);
                                  layerEqs(j)=sumVars(layerEqs(j));

@@ -15,8 +15,18 @@ function [layerEqs,prob,nLayers]=numSubsBase(iSeg,prob,collarCond,closeEqs,iLink
                 layerEqs(j)=subsFor(layerEqs(j),sprintf('G1%d',iDtr),...
                     {sprintf('G0%d',iSeg)},...
                     Kx(iSeg)/Kx(dtrs));
+            end
+            if ismember(sprintf('psi1%d',iDtr),layerEqs(j).vars)
                 layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',iDtr))}=sprintf('psi0%d',iSeg);
+            end
+            if ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars) && ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
                 layerEqs(j)=numPassUp(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+            elseif ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
+                layerEqs(j)=numPassUpPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+            elseif ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
+                keyboard
+                %numPassUpG function is missing for now; unclear if needed
+                    %create issue...
             end
             switch collarCond
                 case 'psiC'
@@ -46,16 +56,21 @@ function [layerEqs,prob,nLayers]=numSubsBase(iSeg,prob,collarCond,closeEqs,iLink
 
             for j=nLayers:-1:1
                 k=J(termed(J));
-                if ismember(sprintf('G1%d',k),layerEqs(j).vars)    
+                if ismember(sprintf('psi1%d',k),layerEqs(j).vars)
                     layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
+                    layerEqs(j)=sumVars(layerEqs(j));
+                end
+                if ismember(sprintf('G1%d',k),layerEqs(j).vars)    
                     layerEqs(j)=subsFor(layerEqs(j),closeEqs(iLinkClose==k).depvar,...
                         closeEqs(iLinkClose==k).vars,...
                         closeEqs(iLinkClose==k).coefs);
                     layerEqs(j)=sumVars(layerEqs(j));
                 end
                 k=J(~termed(J));
-                if ismember(sprintf('G1%d',k),layerEqs(j).vars)    
+                if ismember(sprintf('psi1%d',k),layerEqs(j).vars)
                     layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
+                end
+                if ismember(sprintf('G1%d',k),layerEqs(j).vars)    
                     layerEqs(j)=subsFor(layerEqs(j),massCons.depvar,...
                         massCons.vars,...
                         massCons.coefs);
@@ -65,8 +80,9 @@ function [layerEqs,prob,nLayers]=numSubsBase(iSeg,prob,collarCond,closeEqs,iLink
                     layerEqs(j)=numPassUp(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
                 elseif ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
                     keyboard  %if ever happens, need to pass up the right stuff here...
+                        %create issue
                 elseif ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
-                    keyboard
+                    layerEqs(j)=numPassUpPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
                 end
                 switch collarCond
                     case 'psiC'
@@ -92,25 +108,32 @@ function [layerEqs,prob,nLayers]=numSubsBase(iSeg,prob,collarCond,closeEqs,iLink
                 massCons=numIsolate(massCons,massCons.vars(startsWith(massCons.vars,'G1')));
 
                 for j=nLayers:-1:1
-                    if ismember(sprintf('G1%d',J(1)),layerEqs(j).vars) || ismember(sprintf('G1%d',J(2)),layerEqs(j).vars) 
-                        %making strong assumption that J(2) is iLink of extraEq
-                        %and both present in layerEq
-                        for k=J
-                            if ismember(sprintf('psi1%d',k),layerEqs(j).vars)
-                                layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
-                            end
+                    for k=J
+                        if ismember(sprintf('psi1%d',k),layerEqs(j).vars)
+                            layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
+                            layerEqs(j)=sumVars(layerEqs(j));
                         end
-                        layerEqs(j)=sumVars(layerEqs(j));
+                    end
+                    if ismember(extraEqs(iExEq).depvar,layerEqs(j).vars)  
                         layerEqs(j)=subsFor(layerEqs(j),extraEqs(iExEq).depvar,extraEqs(iExEq).vars,...
                                                     extraEqs(iExEq).coefs);
                         layerEqs(j)=sumVars(layerEqs(j));
+                    end
+                    if ismember(massCons.depvar,layerEqs(j).vars) 
                         layerEqs(j)=subsFor(layerEqs(j),massCons.depvar,massCons.vars,...
                                                     massCons.coefs);
                         layerEqs(j)=sumVars(layerEqs(j));
+                    end  
+                    if ismember(sprintf('G0%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
                         layerEqs(j)=numPassUp(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
-                        if ismember(layerEqs(j).depvar,layerEqs(j).vars)
-                            layerEqs(j)=numIsolDep(layerEqs(j));
-                        end
+                    elseif ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
+                        keyboard  %if ever happens, need to pass up the right stuff here...
+                            %create issue
+                    elseif ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
+                        layerEqs(j)=numPassUpPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+                    end
+                    if ismember(layerEqs(j).depvar,layerEqs(j).vars)
+                        layerEqs(j)=numIsolDep(layerEqs(j));
                     end
                     switch collarCond
                         case 'psiC'
@@ -148,21 +171,27 @@ function [layerEqs,prob,nLayers]=numSubsBase(iSeg,prob,collarCond,closeEqs,iLink
                     [Kx(J(1))/Kx(iSeg) Kx(J(2))/Kx(iSeg)]);
                 massCons=numIsolate(massCons,sprintf('G1%d',J(2))); %one is chosen arbitrarily here
                 for j=nLayers:-1:1
-                    if ismember(sprintf('G1%d',J(2)),layerEqs(j).vars) 
-                        %making strong assumption 
-                        for k=J
-                            if ismember(sprintf('psi1%d',k),layerEqs(j).vars)
-                                layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
-                            end
+                    for k=J
+                        if ismember(sprintf('psi1%d',k),layerEqs(j).vars)
+                            layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
+                            layerEqs(j)=sumVars(layerEqs(j));
                         end
-                        layerEqs(j)=sumVars(layerEqs(j));
+                    end
+                    if ismember(massCons.depvar,layerEqs(j).vars) 
                         layerEqs(j)=subsFor(layerEqs(j),massCons.depvar,massCons.vars,...
                                                     massCons.coefs);
                         layerEqs(j)=sumVars(layerEqs(j));
+                    end
+                    if ismember(sprintf('G0%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
                         layerEqs(j)=numPassUp(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
-                        if ismember(layerEqs(j).depvar,layerEqs(j).vars)
-                            layerEqs(j)=numIsolDep(layerEqs(j));
-                        end
+                    elseif ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
+                        keyboard  %if ever happens, need to pass up the right stuff here...
+                            %create issue
+                    elseif ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
+                        layerEqs(j)=numPassUpPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+                    end
+                    if ismember(layerEqs(j).depvar,layerEqs(j).vars)
+                        layerEqs(j)=numIsolDep(layerEqs(j));
                     end
                     switch collarCond
                         case 'psiC'

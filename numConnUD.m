@@ -8,13 +8,15 @@ function [layerEqs,prob,nLayers]=numConnUD(iSeg,layerEqs,closeEqs,iLinkClose,ext
 
     if nSibs==1
         for j=1:nLayers
-            if ismember(sprintf('G0%d',par),layerEqs(j).vars)
+            if ismember(sprintf('psi0%d',par),layerEqs(j).vars)
                 layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi0%d',par))}=sprintf('psi1%d',iSeg);
+            end
+            if ismember(sprintf('G0%d',par),layerEqs(j).vars)
                 layerEqs(j)=subsFor(layerEqs(j),sprintf('G0%d',par),...
                             {sprintf('G1%d',iSeg)},...
                             Kx(iSeg)/Kx(par));
-                layerEqs(j)=sumVars(layerEqs(j));
             end
+            layerEqs(j)=sumVars(layerEqs(j));
         end
 
     elseif nSibs==2
@@ -34,7 +36,6 @@ function [layerEqs,prob,nLayers]=numConnUD(iSeg,layerEqs,closeEqs,iLinkClose,ext
                                 massCons.vars,massCons.coefs);
                     layerEqs(isJ)=sumVars(layerEqs(isJ));
                 end
-                
                 if ismember(closeEqs(isSib).depvar,layerEqs(isJ).vars)
                     layerEqs(isJ)=subsFor(layerEqs(isJ),closeEqs(isSib).depvar,...
                                 closeEqs(isSib).vars,...

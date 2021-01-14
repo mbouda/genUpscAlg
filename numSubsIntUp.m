@@ -14,17 +14,24 @@ function [layerEqs,prob,nLayers]=numSubsIntUp(iSeg,prob,closeEqs,iLinkClose,extr
         for j=nLayers:-1:1
             %make Fun for this?
             iDtr=find(dtrs);
-            
             if ismember(sprintf('G1%d',iDtr),layerEqs(j).vars)
                 layerEqs(j)=subsFor(layerEqs(j),sprintf('G1%d',iDtr),...
                     {sprintf('G0%d',iSeg)},...
                     Kx(iSeg)/Kx(dtrs));
+            end
+            if ismember(sprintf('psi1%d',iDtr),layerEqs(j).vars)
                 layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',iDtr))}=sprintf('psi0%d',iSeg);
             end
-            if ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
+            layerEqs(j)=sumVars(layerEqs(j));
+            if ismember(sprintf('G0%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
                 layerEqs(j)=numPassUp(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+            elseif ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
+                %pass up G0
+                keyboard  %function does not yet exist
+            elseif ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
+                %pass up psi0
+                layerEqs(j)=numPassUpPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
             end
-            
         end
 
     elseif sum(dtrs)==2
@@ -34,32 +41,29 @@ function [layerEqs,prob,nLayers]=numSubsIntUp(iSeg,prob,closeEqs,iLinkClose,extr
             
             j=J(termed(dtrLinkI));
             k=J(~termed(dtrLinkI));
+            iClEq=iLinkClose==j;
             
-            closeEqs(iLinkClose==j).vars{strcmp(closeEqs(iLinkClose==j).vars,...
+            closeEqs(iClEq).vars{strcmp(closeEqs(iClEq).vars,...
                     sprintf('psi1%d',j))}=sprintf('psi0%d',iSeg);
-            massCons=subsInto(closeEqs(iLinkClose==j),sprintf('G1%d',k),...
+            massCons=subsInto(closeEqs(iClEq),sprintf('G1%d',k),...
                 {sprintf('G0%d',iSeg),sprintf('G1%d',j)},...
                 [Kx(iSeg)/Kx(k) -Kx(j)/Kx(k)]);
-
+            
             for j=nLayers:-1:1
-                %need to update logic tree here to eliminate 'hanging' segments
-                k=J(termed(dtrLinkI));
-                if ismember(sprintf('G1%d',k),layerEqs(j).vars)
-                    layerEqs(j)=subsFor(layerEqs(j),closeEqs(iLinkClose==k).depvar,...
-                        closeEqs(iLinkClose==k).vars,...
-                        closeEqs(iLinkClose==k).coefs);
+                if ismember(closeEqs(iClEq).depvar,layerEqs(j).vars)
+                    layerEqs(j)=subsFor(layerEqs(j),closeEqs(iClEq).depvar,...
+                        closeEqs(iClEq).vars,closeEqs(iClEq).coefs);
                     layerEqs(j)=sumVars(layerEqs(j));
                 end
-                if ismember(sprintf('psi1%d',k),layerEqs(j).vars)
-                    layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
-                    layerEqs(j)=sumVars(layerEqs(j));
-                end
-                k=J(~termed(dtrLinkI));
-                if ismember(sprintf('G1%d',k),layerEqs(j).vars)
-                    layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
+                for k=J
+                    if ismember(sprintf('psi1%d',k),layerEqs(j).vars)
+                        layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
+                        layerEqs(j)=sumVars(layerEqs(j));
+                    end
+                end                
+                if ismember(massCons.depvar,layerEqs(j).vars)
                     layerEqs(j)=subsFor(layerEqs(j),massCons.depvar,...
-                        massCons.vars,...
-                        massCons.coefs);
+                        massCons.vars,massCons.coefs);
                     layerEqs(j)=sumVars(layerEqs(j));
                 end
                 if ismember(sprintf('G0%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
@@ -84,26 +88,31 @@ function [layerEqs,prob,nLayers]=numSubsIntUp(iSeg,prob,closeEqs,iLinkClose,extr
             massCons=sumVars(massCons);
             massCons=numIsolate(massCons,massCons.vars(startsWith(massCons.vars,'G1')));
             
-            
             for j=nLayers:-1:1
-                if ismember(sprintf('G1%d',J(1)),layerEqs(j).vars) || ismember(sprintf('G1%d',J(2)),layerEqs(j).vars) 
-                    %making strong assumption that J(2) is iLink of extraEq
-                    %and both present in layerEq
-                    for k=J
-                        if ismember(sprintf('psi1%d',k),layerEqs(j).vars)
-                            layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
-                        end
+                for k=J
+                    if ismember(sprintf('psi1%d',k),layerEqs(j).vars)
+                        layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
+                        layerEqs(j)=sumVars(layerEqs(j));
                     end
-                    layerEqs(j)=sumVars(layerEqs(j));
+                end
+                if ismember(extraEqs(iExEq).depvar,layerEqs(j).vars) 
                     layerEqs(j)=subsFor(layerEqs(j),extraEqs(iExEq).depvar,extraEqs(iExEq).vars,...
                                                 extraEqs(iExEq).coefs);
                     layerEqs(j)=sumVars(layerEqs(j));
+                end
+                if ismember(massCons.depvar,layerEqs(j).vars) 
                     layerEqs(j)=subsFor(layerEqs(j),massCons.depvar,massCons.vars,...
                                                 massCons.coefs);
                     layerEqs(j)=sumVars(layerEqs(j));
                 end
-                if ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
+                if ismember(sprintf('G0%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
                     layerEqs(j)=numPassUp(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+                elseif ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
+                    %pass up G0
+                    keyboard  %function does not yet exist
+                elseif ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
+                    %pass up psi0
+                    layerEqs(j)=numPassUpPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
                 end
                 if ismember(layerEqs(j).depvar,layerEqs(j).vars)
                     layerEqs(j)=numIsolDep(layerEqs(j));

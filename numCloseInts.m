@@ -63,7 +63,8 @@ function [closeEqs,layerEqs,termed,iLinkClose]=numCloseInts(prob,closeEqs,iLinkC
                     layerEqs(iLayer)=subsIntoAvg(layerEqs(iLayer),i,inLayer(i),c1(i),c2(i));
                 end
                 
-                
+                %unlikely to need to be made more granular as we *know*
+                %what is substituted into/from closed segments.
                 for j=1:nLayers
                     for k=J
                         if ismember(sprintf('G1%d',k),layerEqs(j).vars)
