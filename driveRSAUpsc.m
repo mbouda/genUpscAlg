@@ -19,42 +19,40 @@ resTol=1e-12; %relative tolerance on numerical residuals;
     %soft-test is passed in these cases; all pass if re-run: due to random
     %variation in parameters.
 %% File input, preprocessing
-dataDir='~/Documents/graphics/';
+dataDir='/run/media/mbouda/OS/Users/Martin/Documents/graphics/';
 rsaFile='Triticum_aestivum_LAB201006.vtp';
 
+kx=5e-5;
+kr=1.5e-10;
+b=100e-6;
+nLayInit=8;
 
+[plant,zMin,zLims,dz]=importPlant(strcat(dataDir,rsaFile),nLayInit,kr,kx,b); %uses same system as in "upscalePlant" directory
 
-%% Upscaling
-nTestSys=size(testSet,2);
 collarCond='psiC'; 
 
-for i=1:nTestSys
-    testSet(i).nDomLayers=max(testSet(i).inLayer);
-    testSet(i).params=testingSetRandParams(testSet(i).parents);
-    testSet(i).lyrArch=setLyrArch(testSet(i).parents,testSet(i).inLayer,...
-        testSet(i).params.nL);
-    
-    %could these three setup calls be placed outside the loop for speed?
-    fldPrp=cell(testSet(i).nDomLayers,1);
-    testSet(i).prob=struct('iLinks',fldPrp,'kLayers',fldPrp,'terms',fldPrp,...
+%% Upscaling
+
+
+    plant.nDomLayers=nLayInit;
+    plant.lyrArch=setLyrArch(plant.parents,plant.inLayer,plant.nL);
+    fldPrp=cell(plant.nDomLayers,1);
+    plant.prob=struct('iLinks',fldPrp,'kLayers',fldPrp,'terms',fldPrp,...
         'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp);
-    testSet(i).sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
-    
-    %keyboard calls should currenly only indicate unfinished parts of code
-    %noted in issues; can be returned to execution by entering dbcont.
+    plant.sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
     
     tic
-    for j=1:testSet(i).nDomLayers
-        [testSet(i).prob(j),testSet(i).sol(j)]=layerProbSol(j,collarCond,...
-            testSet(i).lyrArch,testSet(i).params,testSet(i).parents,testSet(i).inLayer);
+    for j=1:plant.nDomLayers
+        [plant.prob(j),plant.sol(j)]=layerProbSol(j,collarCond,...
+            plant.lyrArch,plant.params,plant.parents,plant.inLayer);
     end
-    testSet(i).time=toc;
-    testSol=fullSol(testSet(i));
+    plant.time=toc;
+    testSol=fullSol(plant);
     
-    testSet(i).check=checkSol(testSet(i),testSol,tol,resTol);
-    testSet(i).passSoft=all(cat(1,testSet(i).check(:).allSoft));
-    testSet(i).passRes=all(cat(1,testSet(i).check(:).resTest));
-end
+    plant.check=checkSol(plant,testSol,tol,resTol);
+    plant.passSoft=all(cat(1,plant.check(:).allSoft));
+    plant.passRes=all(cat(1,plant.check(:).resTest));
+
 
 %% Evaluation
 result=cat(1,testSet(:).passSoft);

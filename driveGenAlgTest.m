@@ -67,9 +67,3 @@ end
 
 times=cat(1,testSet(:).time); %times of upscaling, not solution; those are trivial.
 
-
-%% Outputs
-
-% Should probably come out in some recognisable form, e.g. C matrix from Jan's
-% approach... in this case, should look how that was constructed for
-% simple upscaled model in the case presented at LLN
