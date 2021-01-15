@@ -13,7 +13,7 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
     
     vtPlant=adjustVTPlant2(vtPlant);
     
-    [vtPlant.kr,vtPlant.kx]=genHydroConst(kr,kx,b,vtPlant.R);
+    %[vtPlant.kr,vtPlant.kx]=genHydroConst(kr,kx,b,vtPlant.R);
     %should probably re-categorise  some of those fields into subfields of
     %group-heading fields (geom...)
     
@@ -28,10 +28,14 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
         vtPlant.kr(anyPos)=0; %set kr any protruding segments to 0
     end            
     
+    vtPlant.kr=repmat(kr,[vtPlant.nL 1]);
+    vtPlant.kx=repmat(kx,[vtPlant.nL 1]);
+    
     slPlant=slicePlantByZ(vtPlant,zLims,nLayInit);
     plant=forceTriJuncs(slPlant); 
     
     plant.b=repmat(b,[plant.nL 1]);
+
     plant.params=formPlantParams(plant);
 
 end
