@@ -46,10 +46,10 @@ function  nDOF=redDOFs(sets,parents,isSub,isX,nSets)
 
         soilCat=lenSet<oCat;
         if nCat>1
-            for i=1:nCat
+            for i=1:nCat-1
                 iSet=find(iLen==i);
                 if soilCat(iSet)
-                    j=i+1;
+                    j=i+1;  
                     jSet=find(iLen==j);
                     allIn=all(ismember(uqSets{iSet},uqSets{jSet}));
                     sameNet=subN(jCat(iSet))==subN(jCat(jSet));

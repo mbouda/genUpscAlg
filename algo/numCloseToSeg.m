@@ -1,13 +1,14 @@
 function [closeEqs,iLinkClose,targTrack]=numCloseToSeg(toSeg,closeEqs,iLinkClose,prob,Kx,b2,c1,c2,c5,parents,inLayer)
 
-    pars=flipud(unique(parents(iLinkClose)));
+    pars=unique(parents(iLinkClose));
     pars=pars(pars~=toSeg);
 
     %set up list
     targTrack=struct('head',num2cell(iLinkClose),'list',cell(size(iLinkClose)));
     while any(pars)
-  
-        for i=pars'
+        
+        i=pars(end);
+
             dtrs=(parents==i);
             J=find(dtrs)';
             if sum(dtrs)==1
@@ -65,8 +66,10 @@ function [closeEqs,iLinkClose,targTrack]=numCloseToSeg(toSeg,closeEqs,iLinkClose
                 targTrack(end+1,1).head=i;
                 targTrack(end,1).list=newList;
             end
-        end
-        pars=flipud(unique(parents(iLinkClose)));
+            
+        
+        pars(end)=parents(i);
+        pars=unique(pars);
         pars=pars(pars~=toSeg);
     end
     

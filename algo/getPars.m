@@ -1,4 +1,4 @@
-function pars=getPars(termed,prob,parents)
+function [pars,targDtr]=getPars(termed,prob,parents)
 
     pars=parents(prob.iLinks(termed)); %parents of termed
     pars=pars(~termed(ismember(prob.iLinks,pars))); %that are open
@@ -8,5 +8,6 @@ function pars=getPars(termed,prob,parents)
         canClose(i)=all(termed(ismember(prob.iLinks,find(parents==pars(i)))));
     end
     pars=unique(pars(canClose));
-    
+
+    targDtr=findTargDtr(pars,parents,prob);
 end

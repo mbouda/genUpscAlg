@@ -1,13 +1,16 @@
 function [closeEqs,layerEqs,termed,iLinkClose]=numCloseInts(prob,closeEqs,iLinkClose,layerEqs,nLayers,Kx,b2,c1,c2,c5,parents,inLayer,termed,jLayer)
 
-    pars=getPars(termed,prob,parents);
-    cut=~ismember(inLayer(pars),prob.kLayers) | ...
-        ismember(prob.iLinks(termed),prob.targ); 
+    [pars,targDtr]=getPars(termed,prob,parents);
+    
+    %for each par
+    %need to see if any dtr is a prob.targ
+    cut=~ismember(inLayer(pars),prob.kLayers) | targDtr; 
     pars(cut)=[];
-
+    
     while any(pars)
   
-        for i=pars'
+        i=pars(end);
+        
             dtrs=(parents==i);
             if sum(dtrs)==1
                 iDtr=find(dtrs);
@@ -100,16 +103,14 @@ function [closeEqs,layerEqs,termed,iLinkClose]=numCloseInts(prob,closeEqs,iLinkC
 
             %also declare this closed
             termed(ismember(prob.iLinks,i))=true;
-        end
-        pars=getPars(termed,prob,parents);
         
-        if any(pars)
-            cut=false(size(pars));
-            for i=1:size(pars,1)
-                cut(i)=any(ismember(find(ismember(parents,pars(i))),prob.targ)); % may strongly assume downward-only growth...
-            end
-            cut=cut | ~ismember(inLayer(pars),prob.kLayers);  
-            pars(cut)=[];
+        if all(termed(ismember(prob.iLinks,find(parents==parents(i))))) && ...
+                ~findTargDtr(parents(i),parents,prob) && ...
+                ismember(inLayer(parents(i)),prob.kLayers) && ...
+                ~ismember(parents(i),pars)
+            pars(end)=parents(i); 
+        else
+            pars(end)=[];
         end
     end
     
