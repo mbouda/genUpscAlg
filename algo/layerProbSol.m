@@ -114,10 +114,22 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
             eqs=solveSysFor(iLayer,layerSet,prob.kLayers,layerEqs,elimVars,nVars);
         end
     else
-        %underdetermined: algorithm failed
-        %usually down to a segment ordering issue...
+        %underdetermined
+        %for lupinus, 42-day, can solve if drop layer(s)
+        %insert code testing subsets of layers
+        jLayer=find(prob.kLayers==iLayer);
+        jTop=jLayer;
+        jBot=jLayer;
+        eqs(jTop:jBot);
+            %make the allVars etc. & nVars<nEqs code into a function and
+            %then use here (and above) on verious subsets of the layers
+                %in some order, &/or just 'all' subsets...
+                
+        
+        
         keyboard
-        % &/or throw error here
+        %still underdetermined: algorithm failed
+        %usually down to a segment ordering issue...
         
     end
     

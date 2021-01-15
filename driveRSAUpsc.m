@@ -20,7 +20,9 @@ resTol=1e-12; %relative tolerance on numerical residuals;
     %variation in parameters.
 %% File input, preprocessing
 dataDir='/run/media/mbouda/OS/Users/Martin/Documents/graphics/';
-rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_7denni_simulace.vtp';
+rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_42denni_simulace.vtp';
+%rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_7denni_simulace.vtp'; %works already!
+
 
 kx=5e-5;
 kr=1.5e-10;
@@ -34,7 +36,6 @@ collarCond='psiC';
 
 %% Upscaling
 
-
     plant.nDomLayers=nLayInit;
     plant.lyrArch=setLyrArch(plant.parents,plant.inLayer,plant.nL);
     fldPrp=cell(plant.nDomLayers,1);
@@ -47,7 +48,17 @@ collarCond='psiC';
         [plant.prob(j),plant.sol(j)]=layerProbSol(j,collarCond,...
             plant.lyrArch,plant.params,plant.parents,plant.inLayer);
     end
+    
+    %currently handles d.o.f.s distal to the domain, but not acropetal ones
+    %could that be improved? as in, start from tops, if can reduce to just
+    %one psiS & 1 junction G0, then this may help. Although, does it ever?
+    
     plant.time=toc;
+    
+    plant.params.b=plant.b;
+    plant.params.r=plant.R;
+    plant.params.kr=plant.kr;
+    plant.params.L=plant.L;
     testSol=fullSol(plant);
     
     plant.check=checkSol(plant,testSol,tol,resTol);
@@ -56,20 +67,20 @@ collarCond='psiC';
 
 
 %% Evaluation
-result=cat(1,testSet(:).passSoft);
+result=cat(1,plant.passSoft);
 if all(result)
-    fprintf(1,'All cases soft-tested successfully to rel. tol=%.3e\n',tol);
+    fprintf(1,'Plant soft-tested successfully to rel. tol=%.3e\n',tol);
 else
-    fprintf(1,'Failed soft-test in case %d\n',find(~result));
+    fprintf(1,'Plant failed soft-test\n');
 end
-result=cat(1,testSet(:).passRes);
+result=cat(1,plant.passRes);
 if all(result)
-    fprintf(1,'All cases tested successfully on residuals to rel. tol=%.3e\n',resTol);
+    fprintf(1,'Plant tested successfully on residuals to rel. tol=%.3e\n',resTol);
 else
-    fprintf(1,'Failed residual test in case %d\n',find(~result));
+    fprintf(1,'Plant failed residual test\n',);
 end
 
-times=cat(1,testSet(:).time); %times of upscaling, not solution; those are trivial.
+times=cat(1,plant.time); %times of upscaling, not solution; those are trivial.
 
 
 %% Outputs

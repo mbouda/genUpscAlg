@@ -123,6 +123,7 @@ function layerEqs=compClrLyrEqs(iLayer,collarCond,layerEqs,prob,b2,c1,c2,c5,Kx,i
                                termed,parents,inLayer);
         jLidEq=iLidLinks==parents(j);
         lidEqs(jLidEq)=numPassLidDn(j,prob,closeEqs,iLinkClose,extraEqs,iLinkExtra,lidEqs(jLidEq),Kx,b2,c1,c2,c5,termed,parents,inLayer);
+        iLidLinks=cat(1,lidEqs(:).iLink);
     end
 
     %after this, some of the extra Layer equations may remain unresolved
