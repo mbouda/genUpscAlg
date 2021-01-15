@@ -1,7 +1,8 @@
+% This script is used to drive the upscaling process on an RSA created by
+% CPlantBox, stored in a *.vtp file.
 
-addpath ./algo
-addpath ./testing
-addpath ./fullSol
+%% Preliminaries
+addpath ./algo ./fullSol ./testing ./vtpInput
 
 myPool=parpool(6); %used in arriving at full solutions
 
@@ -17,9 +18,13 @@ resTol=1e-12; %relative tolerance on numerical residuals;
     %have now registered some cases of residuals ~3e-12, so fails but fine,
     %soft-test is passed in these cases; all pass if re-run: due to random
     %variation in parameters.
-%%
-testSet=formTestSet();
+%% File input, preprocessing
+dataDir='~/Documents/graphics/';
+rsaFile='Triticum_aestivum_LAB201006.vtp';
 
+
+
+%% Upscaling
 nTestSys=size(testSet,2);
 collarCond='psiC'; 
 

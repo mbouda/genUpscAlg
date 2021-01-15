@@ -1,4 +1,4 @@
-function fullSol=testCaseSol(testCase)
+function sol=fullSol(testCase)
 
 
 
@@ -16,10 +16,10 @@ function fullSol=testCaseSol(testCase)
     [nLayer,nBC]=size(psiBCS);
     nC=1;
 
-    fullSol=matSol(sys,psiBC,psiBCS,nBC,nC,nLayer);
-    fullSol.psiBCS=psiBCS;
-    fullSol.psiBC=psiBC;
-    fullSol.nBC=nBC;
-    fullSol.nC=nC;
+    sol=matSol(sys,psiBC,psiBCS,nBC,nC,nLayer);
+    sol.psiBCS=psiBCS;
+    sol.psiBC=psiBC;
+    sol.nBC=nBC;
+    sol.nC=nC;
 
 end

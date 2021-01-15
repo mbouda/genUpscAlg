@@ -38,12 +38,4 @@ function  sol=matSol(sys,psiBC,psiBCS,nBC,nC,nL)
         
     end
 
-    %exactly what do we want to solve for?
-        %minimal sol'n: psiXL to then fit...
-        %maximal: Qr,Qx1, psiXS, psi0
-                % KRS, KrS
-                %compare profiles of LL, KRS, (SUF?, Qx? .. Jan's matrices..)
-        
-        %current: psiXL, QRL
-        %can easily add psiXS, Qr, but mind variable size...
 end
