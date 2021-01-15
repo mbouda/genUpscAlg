@@ -3,7 +3,7 @@ function prob=numProbDef(iLayer,acroLrs,nxtLr,basiLrs,prvLr,parents,inLayer)
 %     isInLayer=inLayer==iLayer;
 %     ~isInLayer(parents(isInLayer))
 %     ~isInLayer(parents(isInLayer))
-    
+
     top=iLayer;
     bot=iLayer;
     low=max(inLayer);  %bring in from outside!

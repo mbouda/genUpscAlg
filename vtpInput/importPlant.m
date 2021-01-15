@@ -3,6 +3,10 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
     vtpRoot=readRootVTP(fileName);
     vtPlant=formPlantFromVTP(vtpRoot);
     
+    
+    vtPlant.cz(:,end)=vtPlant.cz(:,end)-max(vtPlant.cz(:,end));
+    %normalise root collar to 0 elevation, always
+    
     zMin=floor(min(sum(vtPlant.cz,2)))/100;
     dz=zMin/nLayInit;
     zLims=(0:dz:zMin)';

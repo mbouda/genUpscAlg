@@ -20,14 +20,15 @@ resTol=1e-12; %relative tolerance on numerical residuals;
     %variation in parameters.
 %% File input, preprocessing
 dataDir='/run/media/mbouda/OS/Users/Martin/Documents/graphics/';
-rsaFile='Triticum_aestivum_LAB201006.vtp';
+rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_7denni_simulace.vtp';
 
 kx=5e-5;
 kr=1.5e-10;
 b=100e-6;
 nLayInit=8;
 
-[plant,zMin,zLims,dz]=importPlant(strcat(dataDir,rsaFile),nLayInit,kr,kx,b); %uses same system as in "upscalePlant" directory
+[plant,zMin,zLims,dz]=importPlant(strcat(dataDir,rsaFile),nLayInit,kr,kx,b); 
+
 
 collarCond='psiC'; 
 
@@ -37,10 +38,10 @@ collarCond='psiC';
     plant.nDomLayers=nLayInit;
     plant.lyrArch=setLyrArch(plant.parents,plant.inLayer,plant.nL);
     fldPrp=cell(plant.nDomLayers,1);
+    
     plant.prob=struct('iLinks',fldPrp,'kLayers',fldPrp,'terms',fldPrp,...
         'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp);
     plant.sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
-    
     tic
     for j=1:plant.nDomLayers
         [plant.prob(j),plant.sol(j)]=layerProbSol(j,collarCond,...

@@ -25,8 +25,9 @@ function [layerEqs,prob,nLayers]=addLayerEq(extraEq,layerEqs,prob,nLayers,massCo
                         newEq=subsFor(newEq,extraEq.helperEqs(isSib).depvar,...
                             extraEq.helperEqs(isSib).vars,extraEq.helperEqs(isSib).coefs);  
                         newEq=sumVars(newEq);
-                        newEq=numIsolDep(newEq);
-                        
+                        if ismember(newEq.depvar,newEq.vars)
+                            newEq=numIsolDep(newEq);
+                        end
                         newEq=numPassUp(newEq,iSeg,inLayer,b2,c1,c2,c5);
                     case 'dn'
                         isSib=cat(1,extraEq.helperEqs(:).iLink)~=iSeg;

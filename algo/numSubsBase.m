@@ -5,6 +5,8 @@ function [layerEqs,prob,nLayers]=numSubsBase(iSeg,prob,collarCond,closeEqs,iLink
 % achieved by numPassUp within the loop over all layers
 
     dtrs=(parents==iSeg);
+    
+    
     if sum(dtrs)==1
           
         iDtr=find(dtrs);
@@ -44,9 +46,11 @@ function [layerEqs,prob,nLayers]=numSubsBase(iSeg,prob,collarCond,closeEqs,iLink
     elseif sum(dtrs)==2
          
         J=find(dtrs)';
-        if any(termed(dtrs))
-            j=J(termed(J));
-            k=J(~termed(J));
+        dtrLinkI=ismember(prob.iLinks,J);
+        if any(termed(dtrLinkI))
+            
+            j=J(termed(dtrLinkI));
+            k=J(~termed(dtrLinkI));
             
             closeEqs(iLinkClose==j).vars{strcmp(closeEqs(iLinkClose==j).vars,...
                     sprintf('psi1%d',j))}=sprintf('psi0%d',iSeg);
@@ -55,7 +59,7 @@ function [layerEqs,prob,nLayers]=numSubsBase(iSeg,prob,collarCond,closeEqs,iLink
                 [Kx(iSeg)/Kx(k) -Kx(j)/Kx(k)]);
 
             for j=nLayers:-1:1
-                k=J(termed(J));
+                k=J(termed(dtrLinkI));
                 if ismember(sprintf('psi1%d',k),layerEqs(j).vars)
                     layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
                     layerEqs(j)=sumVars(layerEqs(j));
@@ -66,7 +70,7 @@ function [layerEqs,prob,nLayers]=numSubsBase(iSeg,prob,collarCond,closeEqs,iLink
                         closeEqs(iLinkClose==k).coefs);
                     layerEqs(j)=sumVars(layerEqs(j));
                 end
-                k=J(~termed(J));
+                k=J(~termed(dtrLinkI));
                 if ismember(sprintf('psi1%d',k),layerEqs(j).vars)
                     layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',k))}=sprintf('psi0%d',iSeg);
                 end
