@@ -18,7 +18,8 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
     end
     
     %sometimes psiC gets reported twice: not summed where it should be!
-    for i=1:nLayers
+    mLayers=size(layerEqs,1);
+    for i=1:mLayers
         layerEqs(i)=sumVars(layerEqs(i));
     end
     
@@ -60,6 +61,7 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
     end
     
     [elimVars,nVars]=countSysVars(layerEqs(:),prob);
+    
     if nVars==(nLayers-1)
         eqs=solveSysFor(iLayer,prob.kLayers,prob.kLayers,layerEqs,elimVars,nVars);
     elseif nVars<(nLayers-1)

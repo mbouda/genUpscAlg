@@ -1,9 +1,4 @@
 function [layerEqs,prob,nLayers]=addLayerEq(extraEq,layerEqs,prob,nLayers,massCons,iSeg,par,dir,inLayer,b2,c1,c2,c5)
-        
-%for multiple added eqs in series, appears to result in
-%degenerate coefficients
-%pretty much regardless of how it is done...
-
 
             extraLayers=discoverIndices(extraEq.vars,'psiL');
             extraLayers=setdiff(extraLayers,prob.kLayers);
@@ -58,6 +53,36 @@ function [layerEqs,prob,nLayers]=addLayerEq(extraEq,layerEqs,prob,nLayers,massCo
                 layerEqs=cat(1,layerEqs,newEq);
 
                 prob.kLayers=cat(1,prob.kLayers,newLayer);
+                nLayers=nLayers+1;
+            elseif numel(extraEq.targTrack)>1
+                newEq=extraEq;
+                newEq=rmfield(newEq,'helperEqs');
+                newEq=rmfield(newEq,'targTrack');
+                newEq=rmfield(newEq,'iLink');
+                
+                isSib=cat(1,extraEq.helperEqs(:).iLink)==iSeg;
+                newEq=subsFor(newEq,extraEq.helperEqs(isSib).depvar,...
+                    extraEq.helperEqs(isSib).vars,extraEq.helperEqs(isSib).coefs);
+                newEq=sumVars(newEq);
+                newEq.vars{ismember(newEq.vars,sprintf('psi0%d',par))}=sprintf('psi1%d',iSeg);
+                newEq=sumVars(newEq);
+                newEq=numPassDnPsi(newEq,iSeg,inLayer,c1,c2,c5);
+                
+                newEq.vars=cat(2,newEq.vars,newEq.depvar);
+                newEq.coefs=cat(2,newEq.coefs,-1);
+                newEq.depvar='0';
+                
+                newEq=subsFor(newEq,extraEq.helperEqs(~isSib).depvar,...
+                    extraEq.helperEqs(~isSib).vars,extraEq.helperEqs(~isSib).coefs);
+                newEq.vars{ismember(newEq.vars,sprintf('psi0%d',par))}=sprintf('psi1%d',...
+                    extraEq.helperEqs(~isSib).iLink);
+                newEq=sumVars(newEq);
+                
+                newEq=truncateZeroCoeffs(newEq,1);
+                
+                newEq.kLayer=0;
+                layerEqs=cat(1,layerEqs,newEq);
+                prob.kLayers=cat(1,prob.kLayers,0);
                 nLayers=nLayers+1;
             end
 end

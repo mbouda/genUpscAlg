@@ -29,9 +29,6 @@ function [extraEq,iLinkEx]=compExtraEq(iLink,prob,b2,c1,c2,c5,Kx,inLayer,parents
         extraEq.helperEqs=closeEqs;
         iLinkEx=iLinkClose(2);
         extraEq.targTrack=targTrack;
-        keyboard %here: have chosen one at random, but will ikely need it both ways... 
-        %Not clear how can identify/test it later on, as will have extraEq
-        %for self / sib, but not both.
     else
         targHead=ismember(iLinkClose,targTrack(hasTargs).head);
         eqSub=numIsolate(closeEqs(targHead),sprintf('psi0%d',iLink));

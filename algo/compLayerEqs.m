@@ -86,8 +86,8 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
             if ~ismember(sib,downInts)
                 downInts=cat(2,downInts,sib);
             end
-        elseif nLegsTarg==2
-            keyboard
+%         elseif nLegsTarg==2
+%             keyboard
             
             %will need to be both up AND down?
             %take both siblings
@@ -97,8 +97,9 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
             %duplication of extraEq work... since we know it goes to targ
             %anyway...
             
-            %need to add to up list: descendants that do NOT terminate in
-            %targ (?) 
+            %seems like only need to add to up list descendants that do NOT
+            %terminate in targ (?), i.e. just do the first part of the
+            %conditional
             
         end %if ==0, no need to execute anything
     end
