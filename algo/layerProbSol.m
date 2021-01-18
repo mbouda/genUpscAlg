@@ -17,6 +17,11 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
             inLayer,parents,nLayers);
     end
     
+    %sometimes psiC gets reported twice: not summed where it should be!
+    for i=1:nLayers
+        layerEqs(i)=sumVars(layerEqs(i));
+    end
+    
     elimLayers=startsWith(cat(1,{layerEqs(:).depvar}),'psiL');
     if any(elimLayers)
         
@@ -54,10 +59,7 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
         layerEqs(J)=[];
     end
     
-    allVars=unique(cat(2,layerEqs(:).vars));
-    domVars=domainBCs(allVars,prob.kLayers);
-    elimVars=allVars(~domVars);
-    nVars=size(elimVars,2);
+    [elimVars,nVars]=countSysVars(layerEqs(:),prob);
     if nVars==(nLayers-1)
         eqs=solveSysFor(iLayer,prob.kLayers,prob.kLayers,layerEqs,elimVars,nVars);
     elseif nVars<(nLayers-1)
@@ -114,23 +116,55 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
             eqs=solveSysFor(iLayer,layerSet,prob.kLayers,layerEqs,elimVars,nVars);
         end
     else
-        %underdetermined
-        %for lupinus, 42-day, can solve if drop layer(s)
-        %insert code testing subsets of layers
-        jLayer=find(prob.kLayers==iLayer);
-        jTop=jLayer;
-        jBot=jLayer;
-        eqs(jTop:jBot);
-            %make the allVars etc. & nVars<nEqs code into a function and
-            %then use here (and above) on verious subsets of the layers
-                %in some order, &/or just 'all' subsets...
-                
         
-        
-        keyboard
-        %still underdetermined: algorithm failed
-        %usually down to a segment ordering issue...
-        
+        layerEqs=truncateZeroCoeffs(layerEqs,nLayers);
+        [elimVars,nVars]=countSysVars(layerEqs(:),prob);
+        if nVars>(nLayers-1)
+            %underdetermined
+            %for lupinus, 42-day, can solve if drop layer(s)
+            %insert code testing subsets of layers
+            jLayer=find(prob.kLayers==iLayer);
+            jTop=jLayer;
+            jBot=jLayer;
+
+            [elimVars,nVars]=countSysVars(layerEqs(jTop:jBot),prob);
+            while nVars>jBot-jTop && (jTop > 1 || jBot<nLayers)
+                %probably house this in separate function:
+                kBot=min(jBot+1,nLayers);
+                kTop=max(jTop-1,1);
+
+                [elimVars,nVars]=countSysVars(layerEqs(jTop:kBot),prob);
+                if nVars<=kBot-jTop
+                    jBot=kBot;
+                else
+                    [elimVars,nVars]=countSysVars(layerEqs(kTop:jBot),prob);
+                    if nVars<=jBot-kTop
+                        jTop=kTop;
+                    else
+                        [elimVars,nVars]=countSysVars(layerEqs(kTop:kBot),prob);
+                        jBot=kBot;
+                        jTop=kTop;
+                    end
+                end
+                %this algorithm steps out symmetrically from the iLayer
+                %fails to account for cases where system is solvable by moving
+                %asymmetrically up or down... would have to go through further
+                %algorithm to just scan all (contiguous?) possibilities that
+                %overlap the iLayer
+            end
+            if nVars<=jBot-jTop
+                eqs=solveSysFor(iLayer,(jTop:jBot)',prob.kLayers,layerEqs(jTop:jBot),elimVars,nVars);
+            else
+                keyboard
+                %still underdetermined: algorithm failed
+                %usually down to a segment ordering issue...
+            end
+        elseif nVars==(nLayers-1)
+            eqs=solveSysFor(iLayer,prob.kLayers,prob.kLayers,layerEqs(:),elimVars,nVars);
+        else
+            keyboard
+            %now overdetermined....
+        end
     end
     
     sol=eqs(prob.kLayers==iLayer);

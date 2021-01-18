@@ -31,7 +31,9 @@ function [closeEqs,layerEqs,termed,iLinkClose]=numCloseInts(prob,closeEqs,iLinkC
                             {sprintf('G0%d',i)},...
                             Kx(i)/Kx(dtrs));
                         layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',iDtr))}=sprintf('psi0%d',i);
+                        layerEqs(j)=sumVars(layerEqs(j));
                         layerEqs(j)=numPassUp(layerEqs(j),i,inLayer(i),b2(i),c1(i),c2(i),c5(i));
+                        
 %                     elseif ismember(sprintf('psi1%d',iDtr),layerEqs(j).vars)
 %                         layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',iDtr))}=sprintf('psi0%d',i);
 %                         layerEqs(j)=numPassUp(layerEqs(j),i,inLayer(i),b2(i),c1(i),c2(i),c5(i));
