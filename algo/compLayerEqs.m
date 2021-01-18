@@ -68,6 +68,18 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
         nOJ=0;
     end
             
+    %identify hanging elements
+    allTops=union(prob.tops,topTerms);
+    hangLinks=identifyHanging(allTops,prob,parents);
+    if any(hangLinks)
+        [hookEqs,nHooks]=connectHanging(hangLinks,prob,parents);
+        %construct minimal network that connects each hanging Link to 1(+)
+        %targ or one other hanging link...
+        %need one equation for each hanger
+        %
+        
+    end
+    
     % ints in order...
     downInts=intersect(prob.ints(inLayer(prob.ints)<iLayer),prob.iLinks(~termed))';
     upInts=flipud(intersect(prob.ints(inLayer(prob.ints)>=iLayer),prob.iLinks(~termed)))';
@@ -140,6 +152,13 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
         end
     end
 
+    %looks like will need extraEqs for overlying layers...
+    
+    %Insert here or below next loop (?) 
+    %or above?
+    
+    %This part of the code likely becomes obsolete by the insertion of
+    %hookEqs
     %if any equation has the G1 of a term, then need to close that
     for i=1:nLayers
         topGradI=discoverIndices(layerEqs(i).vars,'G1');
