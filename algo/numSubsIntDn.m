@@ -70,13 +70,56 @@ function [layerEqs,prob,nLayers]=numSubsIntDn(iSeg,prob,closeEqs,iLinkClose,extr
         else
             iExEq=ismember(iLinkExtra,iSibs);
             nTargLegs=size(extraEqs(iExEq).targTrack,1);
-            if nTargLegs==2
-                keyboard
-                %how to use each to go both ways?
-            elseif nTargLegs==1
+            if nTargLegs==2 && iLinkExtra(iExEq)==iSeg
+                
+                extraEq=numIsolate(extraEqs(iExEq),sprintf('G1%d',sib));
+                extraEq.iLink=sib;
+                
                 massCons=formLinkEq(iSeg,sprintf('G0%d',par),...
                     {sprintf('G1%d',iSibs(1)),sprintf('G1%d',iSibs(2))},...
-                    [Kx(iSibs(1))/Kx(par) Kx(iSibs(2))/Kx(par)]);
+                    [Kx(iSibs(1))/Kx(par) Kx(iSibs(2))/Kx(par)]);   
+                massCons=subsFor(massCons,extraEq.depvar,extraEq.vars,...
+                    extraEq.coefs);
+                massCons=sumVars(massCons);
+
+                for j=1:nLayers
+                    if ismember(massCons.depvar,layerEqs(j).vars)
+                        layerEqs(j)=subsFor(layerEqs(j),massCons.depvar,...
+                                    massCons.vars,massCons.coefs);
+                        layerEqs(j)=sumVars(layerEqs(j));
+                    end
+                    if ismember(sprintf('psi0%d',par),layerEqs(j).vars) %apparently fails when passing down psiC
+                        layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi0%d',par))}=sprintf('psi1%d',iSeg);
+                        layerEqs(j)=sumVars(layerEqs(j));
+                    end
+                    if ismember(extraEq.depvar,layerEqs(j).vars)
+                        layerEqs(j)=subsFor(layerEqs(j),extraEq.depvar,...
+                                    extraEq.vars,extraEq.coefs);
+                        layerEqs(j)=sumVars(layerEqs(j));
+                    end
+                    if ismember(sprintf('psi1%d',sib),layerEqs(j).vars)
+                        layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',sib))}=sprintf('psi1%d',iSeg);
+                        layerEqs(j)=sumVars(layerEqs(j));
+                    end
+                    if ismember(sprintf('G1%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi1%d',iSeg),layerEqs(j).vars)
+                        layerEqs(j)=numPassDn(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+                    elseif ismember(sprintf('psi1%d',iSeg),layerEqs(j).vars)
+                        layerEqs(j)=numPassDnPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+                    elseif ismember(sprintf('G1%d',iSeg),layerEqs(j).vars) 
+                        layerEqs(j)=numPassDnG(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg));
+                    end
+                    if ismember(layerEqs(j).depvar,layerEqs(j).vars)
+                        layerEqs(j)=numIsolDep(layerEqs(j));
+                    end
+                end
+                
+                %presumably, no need to add it, as it was/will be already
+                %added by sibling
+                
+            else
+                massCons=formLinkEq(iSeg,sprintf('G0%d',par),...
+                    {sprintf('G1%d',iSibs(1)),sprintf('G1%d',iSibs(2))},...
+                    [Kx(iSibs(1))/Kx(par) Kx(iSibs(2))/Kx(par)]);   
                 massCons=subsFor(massCons,extraEqs(iExEq).depvar,extraEqs(iExEq).vars,...
                     extraEqs(iExEq).coefs);
                 massCons=sumVars(massCons);

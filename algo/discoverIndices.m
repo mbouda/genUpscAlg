@@ -1,6 +1,10 @@
-function i=discoverIndices(vars,str)
+function c=discoverIndices(vars,str)
     hasStr=vars(startsWith(vars,str))';
-    C=regexp(hasStr,'\d+','match');
-    c=cat(1,C{:});
-    i=str2double(c);
+    
+    nHas=length(hasStr);
+    c=zeros(nHas,1);
+    for i=1:nHas
+        c(i)=str2double(hasStr{i}(length(str)+1:end));
+    end
+    
 end

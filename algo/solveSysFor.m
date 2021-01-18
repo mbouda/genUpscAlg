@@ -1,18 +1,6 @@
 function eqs=solveSysFor(iEq,eqSet,fullSet,eqs,elimVars,nVars)
 
 
-%     if ~all(ismember(fullSet,eqSet))
-%         keyboard
-%         %need to update indexing to account for fact that all equations
-%         %present but only some used & thus indexed via eqSet...
-%         %old algorithm below shows how this was previously done.
-%         iEq=find(fullSet==iEq);
-%         for i=1:size(eqSet,1)
-%             eqSet(i)=find(fullSet==eqSet(i));
-%         end
-%     end
-
-
     eqList=setdiff(eqSet,iEq);
     pres=false(nVars);
     for i=1:nVars
@@ -23,7 +11,7 @@ function eqs=solveSysFor(iEq,eqSet,fullSet,eqs,elimVars,nVars)
     
     badVar=~any(pres,2);
     if any(badVar)
-        remVars=unique(cat(2,eqs(ismember(fullSet,eqList).vars)));
+        remVars=unique(cat(2,eqs(ismember(fullSet,eqList)).vars));
         iL=discoverIndices(remVars,'psiL');
         iBV=find(badVar);
         for i=iBV'
@@ -68,16 +56,3 @@ function eqs=solveSysFor(iEq,eqSet,fullSet,eqs,elimVars,nVars)
         end
     end
 end
-
-    %old algorithm:
-%     eqList=cat(1,setdiff(eqSet,iEq),iEq);
-%     [~,eqInd]=ismember(eqList,fullSet);
-%     for j=1:nVars
-%         eqs(eqInd(j))=numIsolate(eqs(eqInd(j)),elimVars{j});
-%         for k=eqInd(j+1:end)'
-%             eqs(k)=subsFor(eqs(k),eqs(eqInd(j)).depvar,...
-%                             eqs(eqInd(j)).vars,...
-%                             eqs(eqInd(j)).coefs);
-%             eqs(k)=sumVars(eqs(k));
-%         end
-%     end

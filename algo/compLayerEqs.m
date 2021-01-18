@@ -88,7 +88,18 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
             end
         elseif nLegsTarg==2
             keyboard
-            %will need to be both up AND down!
+            
+            %will need to be both up AND down?
+            %take both siblings
+            %do not take off down list
+            %add to up list? (along with relevant descendants)
+            %will need to subs on way down! but maybe doing upward is
+            %duplication of extraEq work... since we know it goes to targ
+            %anyway...
+            
+            %need to add to up list: descendants that do NOT terminate in
+            %targ (?) 
+            
         end %if ==0, no need to execute anything
     end
     downInts=cat(2,downInts,topTermSibs);
@@ -110,11 +121,6 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
                                termed,parents,inLayer);
     end
     
-    %link across top interface of layer i
-%         layerSegs=find(inLayer==iLayer);
-%         layerSegs=layerSegs(inLayer(parents(layerSegs))~=iLayer);
-        %the above two lines ended up too permissive, b/cof the closeTops
-        %on termed below
     for j=prob.targ'
         if ismember(j,prob.tops)
             %take fclose and close it in all layers
@@ -133,4 +139,19 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
         end
     end
 
+    %if any equation has the G1 of a term, then need to close that
+    for i=1:nLayers
+        topGradI=discoverIndices(layerEqs(i).vars,'G1');
+        termGrad=ismember(topGradI,prob.terms);
+        if any(termGrad)
+            for j=find(termGrad)'
+                iClEq=iLinkClose==topGradI(j);
+                layerEqs(i)=subsFor(layerEqs(i),closeEqs(iClEq).depvar,...
+                    closeEqs(iClEq).vars,closeEqs(iClEq).coefs);
+                layerEqs(i)=sumVars(layerEqs(i));
+            end
+        end
+    end
+    
+    
 end

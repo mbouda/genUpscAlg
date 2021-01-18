@@ -19,10 +19,14 @@ resTol=1e-12; %relative tolerance on numerical residuals;
     %soft-test is passed in these cases; all pass if re-run: due to random
     %variation in parameters.
 %% File input, preprocessing
-dataDir='/run/media/mbouda/OS/Users/Martin/Documents/graphics/';
-rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_42denni_simulace.vtp';
-%rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_7denni_simulace.vtp'; %works already!
+dataDir='./testing/crbTestSet/';
 
+%rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_42denni_simulace.vtp';
+
+nDay=13; %on 13, needs to be generalised for targets under both legs of junction at extraEqs
+rsaFile=sprintf('RLab_210117_Lupinus_angustifolius_Chen_2011_%ddenni_simulace.vtp',nDay);
+
+%rsaFile='RLab_210115_workshop.vtp';
 
 kx=5e-5;
 kr=1.5e-10;
@@ -48,12 +52,13 @@ collarCond='psiC';
         [plant.prob(j),plant.sol(j)]=layerProbSol(j,collarCond,...
             plant.lyrArch,plant.params,plant.parents,plant.inLayer);
     end
+    plant.time=toc;
     
     %currently handles d.o.f.s distal to the domain, but not acropetal ones
     %could that be improved? as in, start from tops, if can reduce to just
     %one psiS & 1 junction G0, then this may help. Although, does it ever?
     
-    plant.time=toc;
+  
     
     plant.params.b=plant.b;
     plant.params.r=plant.R;
@@ -77,7 +82,7 @@ result=cat(1,plant.passRes);
 if all(result)
     fprintf(1,'Plant tested successfully on residuals to rel. tol=%.3e\n',resTol);
 else
-    fprintf(1,'Plant failed residual test\n',);
+    fprintf(1,'Plant failed residual test\n');
 end
 
 times=cat(1,plant.time); %times of upscaling, not solution; those are trivial.

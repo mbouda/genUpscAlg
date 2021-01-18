@@ -23,12 +23,15 @@ function [extraEq,iLinkEx]=compExtraEq(iLink,prob,b2,c1,c2,c5,Kx,inLayer,parents
         iLinkEx=iLinkClose(2);
         extraEq.targTrack=[];
     elseif all(hasTargs)
-        keyboard
-        %both have targs...  
-        %how use in this case? return both ways?
-        
-        
+        eqSub=numIsolate(closeEqs(1),sprintf('psi0%d',iLink));
+        extraEq=subsFor(closeEqs(2),eqSub.depvar,eqSub.vars,eqSub.coefs);
+        extraEq=sumVars(extraEq);
+        extraEq.helperEqs=closeEqs;
+        iLinkEx=iLinkClose(2);
         extraEq.targTrack=targTrack;
+        keyboard %here: have chosen one at random, but will ikely need it both ways... 
+        %Not clear how can identify/test it later on, as will have extraEq
+        %for self / sib, but not both.
     else
         targHead=ismember(iLinkClose,targTrack(hasTargs).head);
         eqSub=numIsolate(closeEqs(targHead),sprintf('psi0%d',iLink));
