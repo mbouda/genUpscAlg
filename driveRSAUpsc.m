@@ -23,7 +23,7 @@ dataDir='./testing/crbTestSet/';
 
 %rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_42denni_simulace.vtp';
 
-nDay=13; %on 13, needs to be generalised for targets under both legs of junction at extraEqs
+nDay=16; %on 13, needs to be generalised for targets under both legs of junction at extraEqs
 rsaFile=sprintf('RLab_210117_Lupinus_angustifolius_Chen_2011_%ddenni_simulace.vtp',nDay);
 
 %rsaFile='RLab_210115_workshop.vtp';

@@ -86,8 +86,8 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
             if ~ismember(sib,downInts)
                 downInts=cat(2,downInts,sib);
             end
-%         elseif nLegsTarg==2
-%             keyboard
+        elseif nLegsTarg==2
+            keyboard
             
             %will need to be both up AND down?
             %take both siblings

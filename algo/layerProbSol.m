@@ -35,11 +35,11 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
             layerEqs(J(~keepExtra))=[];
             elimLayers=startsWith(cat(1,{layerEqs(:).depvar}),'psiL');
         end
-        J=find(elimLayers);
+        J=sort(find(elimLayers),'descend');
         
         jL=1:size(layerEqs,1);
         for j=J
-            if ~any(layerEqs(j).coefs==0) && ~any(layerEqs(j).coefs==1) && ...
+            if ~any(layerEqs(j).coefs==0) && ~any(abs(layerEqs(j).coefs==1)) && ...
                     ~any(abs(layerEqs(j).coefs)<(1e-16*max(abs(layerEqs(j).coefs)))) 
                 for k=setdiff(jL,j)
                     if ismember(layerEqs(j).depvar,layerEqs(k).vars)
@@ -53,7 +53,9 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
                 end
             else
                 keyboard
-                %did a duplicate equation slip through?
+                %looks like a duplicate equation slipped through
+                
+                
             end
             jL=setdiff(jL,j);
         end
@@ -61,8 +63,9 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
     end
     
     [elimVars,nVars]=countSysVars(layerEqs(:),prob);
+    mLayers=size(layerEqs,1);
     
-    if nVars==(nLayers-1)
+    if nVars==(mLayers-1)
         eqs=solveSysFor(iLayer,prob.kLayers,prob.kLayers,layerEqs,elimVars,nVars);
     elseif nVars<(nLayers-1)
 

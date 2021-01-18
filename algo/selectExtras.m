@@ -12,7 +12,7 @@ function keepExtra=selectExtras(eqs)
         if cats(i)==0
             cats(i)=iCat;
             for j=i+1:nEqs
-                if all(strcmp(varSet{i},varSet{j}))
+                if all(ismember(varSet{i},varSet{j})) && all(ismember(varSet{j},varSet{i}))
                     cats(j)=iCat;
                 end
             end
