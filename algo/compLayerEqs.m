@@ -72,12 +72,15 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
     allTops=union(prob.tops,topTerms);
     hangLinks=identifyHanging(allTops,prob,parents);
     if any(hangLinks)
-        [hookEqs,nHooks]=connectHanging(hangLinks,prob,parents);
+        [hookEqs,nHooks]=connectHanging(hangLinks,closeEqs,iLinkClose,prob,parents,b2,c1,c2,c5,Kx,inLayer);
         %construct minimal network that connects each hanging Link to 1(+)
         %targ or one other hanging link...
         %need one equation for each hanger
-        %
-        
+        hookEqs=rmfield(hookEqs,'iLink');
+        [hookEqs(:).kLayer]=deal('H');
+    else
+        hookEqs=[];
+        nHooks=0; %looks like don't need this...
     end
     
     % ints in order...
@@ -98,8 +101,8 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
             if ~ismember(sib,downInts)
                 downInts=cat(2,downInts,sib);
             end
-        elseif nLegsTarg==2
-            keyboard
+%         elseif nLegsTarg==2
+%             keyboard
             
             %will need to be both up AND down?
             %take both siblings
@@ -134,6 +137,9 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
                                termed,parents,inLayer);
     end
     
+    %HERE add hookEqs to layerEqs
+    layerEqs=cat(1,layerEqs,hookEqs);
+    
     for j=prob.targ'
         if ismember(j,prob.tops)
             %take fclose and close it in all layers
@@ -152,17 +158,9 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
         end
     end
 
-    %looks like will need extraEqs for overlying layers...
-    
-    %Insert here or below next loop (?) 
-    %or above?
-    
-    %This part of the code likely becomes obsolete by the insertion of
-    %hookEqs
-    %if any equation has the G1 of a term, then need to close that
     for i=1:nLayers
         topGradI=discoverIndices(layerEqs(i).vars,'G1');
-        termGrad=ismember(topGradI,prob.terms);
+        termGrad=ismember(topGradI,iLinkClose);
         if any(termGrad)
             for j=find(termGrad)'
                 iClEq=iLinkClose==topGradI(j);

@@ -8,6 +8,9 @@ function newPlant=forceTriJuncs(plant)
         %this array in the loop below...
     
     nBP=size(badPar,1);
+    if nBP>0
+        warning('Some junctions have >2 daughters, adjusting.','badpar');
+    end
     for i=1:nBP
 
         nD=sum(plant.parents==badPar(i));

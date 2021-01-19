@@ -53,10 +53,8 @@ collarCond='psiC';
             plant.lyrArch,plant.params,plant.parents,plant.inLayer);
     end
     plant.time=toc;
+    %want j=4 to eliminate psiL1, not psiBarX2
     
-    %currently handles d.o.f.s distal to the domain, but not acropetal ones
-    %could that be improved? as in, start from tops, if can reduce to just
-    %one psiS & 1 junction G0, then this may help. Although, does it ever?
     
   
     

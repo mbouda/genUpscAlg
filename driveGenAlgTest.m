@@ -23,6 +23,9 @@ testSet=formTestSet();
 nTestSys=size(testSet,2);
 collarCond='psiC'; 
 
+%newest changes (hookEqs and solveSys...) have broken case 11; appears to
+%solve for worng variables... need to unify that better.
+
 for i=1:nTestSys
     testSet(i).nDomLayers=max(testSet(i).inLayer);
     testSet(i).params=testingSetRandParams(testSet(i).parents);

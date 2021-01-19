@@ -23,6 +23,18 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
         layerEqs(i)=sumVars(layerEqs(i));
     end
     
+    isHook=cat(1,layerEqs(:).kLayer)=='H';
+    if any(isHook)
+        iHook=find(isHook);
+        notHook=find(~isHook)';
+        for i=iHook'
+            layerEqs=resolveHook(i,layerEqs,notHook);
+        end
+        layerEqs(isHook)=[];
+    end
+    %can also pre-eliminate kLayer==0 cases?
+    
+    
     elimLayers=startsWith(cat(1,{layerEqs(:).depvar}),'psiL');
     if any(elimLayers)
         
@@ -39,28 +51,32 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
         
         jL=1:size(layerEqs,1);
         for j=J
-            if ~any(layerEqs(j).coefs==0) && ~any(abs(layerEqs(j).coefs==1)) && ...
-                    ~any(abs(layerEqs(j).coefs)<(1e-16*max(abs(layerEqs(j).coefs)))) 
+            %add test for duplication??
                 for k=setdiff(jL,j)
                     if ismember(layerEqs(j).depvar,layerEqs(k).vars)
                         layerEqs(k)=subsFor(layerEqs(k),layerEqs(j).depvar,...
                             layerEqs(j).vars,layerEqs(j).coefs);
                         layerEqs(k)=sumVars(layerEqs(k));
-                        if ismember(k,J)
+                        if ismember(layerEqs(k).depvar,layerEqs(k).vars)
                             layerEqs(k)=numIsolDep(layerEqs(k));
                         end
                     end
                 end
+            if any(layerEqs(j).coefs==0) || any(abs(layerEqs(j).coefs)==1) || ...
+                    any(abs(layerEqs(j).coefs)<(1e-16*max(abs(layerEqs(j).coefs)))) 
             else
-                keyboard
-                %looks like a duplicate equation slipped through
-                
-                
+                warning('duplicate equation? zero/one coeffs','degenCoefs')
+                %shoulad actually likely just remove these coefficients
+                %before this loop...
+                %use: layerEqs=truncateZeroCoeffs(layerEqs,nLayers);
             end
             jL=setdiff(jL,j);
         end
         layerEqs(J)=[];
     end
+    
+    
+    
     
     [elimVars,nVars]=countSysVars(layerEqs(:),prob);
     mLayers=size(layerEqs,1);
@@ -160,9 +176,13 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
             if nVars<=jBot-jTop
                 eqs=solveSysFor(iLayer,(jTop:jBot)',prob.kLayers,layerEqs(jTop:jBot),elimVars,nVars);
             else
-                keyboard
-                %still underdetermined: algorithm failed
-                %usually down to a segment ordering issue...
+                if nVars<=size(layerEqs,1)
+                    keyboard
+                else
+                    keyboard
+                    %still underdetermined: algorithm failed
+                    %usually down to a segment ordering issue...
+                end
             end
         elseif nVars==(nLayers-1)
             eqs=solveSysFor(iLayer,prob.kLayers,prob.kLayers,layerEqs(:),elimVars,nVars);

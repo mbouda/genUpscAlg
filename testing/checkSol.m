@@ -10,11 +10,14 @@ function check=checkSol(testCase,fullSol,tol,resTol)
         warning off   %this can likely be improved, by (a) specifying which, (b) storing warning in check structure...
         c=[fullSol.psiBCS(solLayers,:)' fullSol.psiXL(othLayers,:)' repmat(fullSol.psiBC,[size(fullSol.psiXL,2) isBdry])]\fullSol.psiXL(i,:)';
         warning on
-        C=sort([c testCase.sol(i).coefs']);
-        
-        check(i).hard=C(:,1)==C(:,2);
-        
-        check(i).soft=abs((C(:,1)-C(:,2))./C(:,1))<tol | abs(C(:,1))<tol;
+        if size(c,1)==size(testCase.sol(i).coefs,2)
+            C=sort([c testCase.sol(i).coefs']);
+            check(i).hard=C(:,1)==C(:,2);
+            check(i).soft=abs((C(:,1)-C(:,2))./C(:,1))<tol | abs(C(:,1))<tol;
+        else
+            check(i).hard=false;
+            check(i).soft=false;
+        end
         check(i).allSoft=all(check(i).soft);
         
         predSol=zeros(fullSol.nBC,1);
