@@ -21,11 +21,13 @@ resTol=1e-12; %relative tolerance on numerical residuals;
 %% File input, preprocessing
 dataDir='./testing/crbTestSet/';
 
+%dataDir='/run/media/mbouda/OS/Users/Martin/Documents/graphics/';
 %rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_42denni_simulace.vtp';
 
-nDay=16; %on 13, needs to be generalised for targets under both legs of junction at extraEqs
+nDay=16; 
 rsaFile=sprintf('RLab_210117_Lupinus_angustifolius_Chen_2011_%ddenni_simulace.vtp',nDay);
 
+%rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 %rsaFile='RLab_210115_workshop.vtp';
 
 kx=5e-5;
@@ -34,7 +36,6 @@ b=100e-6;
 nLayInit=8;
 
 [plant,zMin,zLims,dz]=importPlant(strcat(dataDir,rsaFile),nLayInit,kr,kx,b); 
-
 
 collarCond='psiC'; 
 
