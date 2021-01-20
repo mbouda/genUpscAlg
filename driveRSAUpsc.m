@@ -24,7 +24,7 @@ dataDir='./testing/crbTestSet/';
 %dataDir='/run/media/mbouda/OS/Users/Martin/Documents/graphics/';
 %rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_42denni_simulace.vtp';
 
-nDay=16; 
+nDay=22; 
 rsaFile=sprintf('RLab_210117_Lupinus_angustifolius_Chen_2011_%ddenni_simulace.vtp',nDay);
 
 %rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);

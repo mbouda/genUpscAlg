@@ -2,7 +2,7 @@
 addpath ./algo
 addpath ./testing
 addpath ./fullSol
-
+addpath ./vtpInput/
 myPool=parpool(6); %used in arriving at full solutions
 
 tol=1e-5;  %relative tolerance for soft check
@@ -19,11 +19,12 @@ resTol=1e-12; %relative tolerance on numerical residuals;
     %variation in parameters.
 %%
 testSet=formTestSet();
+testSet=addCrbTestCases(testSet,'./testing/crbTestSet/','testSet.mat');
 
 nTestSys=size(testSet,2);
 collarCond='psiC'; 
 
-%newest changes (hookEqs and solveSys...) have broken case 11; appears to
+%newest changes (hookEqs and solveSys...) have broken case 11, layer 1; appears to
 %solve for worng variables... need to unify that better.
 
 for i=1:nTestSys
@@ -67,6 +68,10 @@ if all(result)
 else
     fprintf(1,'Failed residual test in case %d\n',find(~result));
 end
+
+%looks like currently some residuals on order 1e-10 in the crb cases,
+%likely due to seleciton of solution/elimination variables at end; to be
+%addressed...
 
 times=cat(1,testSet(:).time); %times of upscaling, not solution; those are trivial.
 

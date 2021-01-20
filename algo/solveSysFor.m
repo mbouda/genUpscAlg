@@ -12,10 +12,10 @@ function eqs=solveSysFor(iEq,eqSet,fullSet,eqs,elimVars,nVars)
     end
     
     
+    badVars=formSys(elimVars,eqs,fullSet,iEq);
     
-    %should also eqliminate an equation!!!
-    relVars=intersect(elimVars,eqs(fullSet==iEq).vars);
-    badVars=setdiff(elimVars,relVars);
+%     relVars=intersect(elimVars,eqs(fullSet==iEq).vars);
+%     badVars=setdiff(elimVars,relVars);
     
     nVars=size(elimVars,2);
     

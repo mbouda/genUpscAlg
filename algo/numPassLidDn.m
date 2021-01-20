@@ -72,8 +72,9 @@ function lidEq=numPassLidDn(iSeg,prob,closeEqs,iLinkClose,extraEqs,iLinkExtra,li
             nTargLegs=size(extraEqs(iExEq).targTrack,1);
             if nTargLegs==2
                 keyboard
-                %how to use each to go both ways?
-                %create extra (lid) equations?
+                %need to add code here from where it already exists
+                
+                %also, create extra (lid) equations?
             elseif nTargLegs==1
                 massCons=formLinkEq(iSeg,sprintf('G0%d',par),...
                     {sprintf('G1%d',iSibs(1)),sprintf('G1%d',iSibs(2))},...
