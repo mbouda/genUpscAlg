@@ -12,19 +12,19 @@ function [layerEqs,prob,nLayers]=numConnUDClr(iSeg,layerEqs,closeEqs,iLinkClose,
             case 'psiC'
                 %lid needs to be passed down to the parent of iSeg 
                     %currently is just still at the collar
-                
-                lidEqs(parLid).depvar=sprintf('psi1%d',iSeg);
-                lidEqs(parLid)=subsFor(lidEqs(parLid),sprintf('G0%d',par),...
-                                {sprintf('G1%d',iSeg)},...
-                                Kx(iSeg)/Kx(par));
-                lidEqs(parLid).iLink=iSeg;
-                                
+                if any(parLid)
+                    lidEqs(parLid).depvar=sprintf('psi1%d',iSeg);
+                    lidEqs(parLid)=subsFor(lidEqs(parLid),sprintf('G0%d',par),...
+                                    {sprintf('G1%d',iSeg)},...
+                                    Kx(iSeg)/Kx(par));
+                    lidEqs(parLid).iLink=iSeg;
+                end   
                 for j=1:nLayers
                     if ismember(sprintf('psi0%d',par),layerEqs(j).vars)
                         layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi0%d',par))}=sprintf('psi1%d',iSeg);
                         layerEqs(j)=sumVars(layerEqs(j));
                     end
-                    if ismember(sprintf('psi1%d',iSeg),layerEqs(j).vars)
+                    if ismember(sprintf('psi1%d',iSeg),layerEqs(j).vars) && any(parLid)
                         layerEqs(j)=subsFor(layerEqs(j),lidEqs(parLid).depvar,...
                                     lidEqs(parLid).vars,...
                                     lidEqs(parLid).coefs);
@@ -68,8 +68,13 @@ function [layerEqs,prob,nLayers]=numConnUDClr(iSeg,layerEqs,closeEqs,iLinkClose,
                     massCons=subsFor(massCons,closeEqs(iClEq).depvar,...
                                 closeEqs(iClEq).vars,closeEqs(iClEq).coefs);
                     massCons.vars{strcmp(massCons.vars,sprintf('psi1%d',sib))}=sprintf('psi1%d',iSeg);
-                    massCons=subsFor(massCons,sprintf('psi1%d',iSeg),...
+                    if any(parLid)
+                        massCons=subsFor(massCons,sprintf('psi1%d',iSeg),...
                                 lidEqs(parLid).vars,lidEqs(parLid).coefs);
+                    else
+                        keyboard
+                        %need to make sure this is ok...
+                    end
                     massCons=sumVars(massCons);
                     massCons=numIsolDep(massCons);
                     for j=1:nLayers
@@ -86,7 +91,7 @@ function [layerEqs,prob,nLayers]=numConnUDClr(iSeg,layerEqs,closeEqs,iLinkClose,
                             layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',iSeg))}=sprintf('psi0%d',par);
                             layerEqs(j)=sumVars(layerEqs(j));
                         end
-                        if ismember(lidEqs(parLid).depvar,layerEqs(j).vars)
+                        if any(parLid) && ismember(lidEqs(parLid).depvar,layerEqs(j).vars)
                             layerEqs(j)=subsFor(layerEqs(j),lidEqs(parLid).depvar,...
                                 lidEqs(parLid).vars,lidEqs(parLid).coefs);
                             layerEqs(j)=sumVars(layerEqs(j));
@@ -137,7 +142,7 @@ function [layerEqs,prob,nLayers]=numConnUDClr(iSeg,layerEqs,closeEqs,iLinkClose,
                                 layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi0%d',par))}=sprintf('psi1%d',iSeg);
                                 layerEqs(j)=sumVars(layerEqs(j));
                              end 
-                             if ismember(sprintf('psi1%d',iSeg),layerEqs(j).vars)
+                             if ismember(sprintf('psi1%d',iSeg),layerEqs(j).vars) && any(parLid)
                                 layerEqs(j)=subsFor(layerEqs(j),sprintf('psi1%d',iSeg),lidEqs(parLid).vars,...
                                                             lidEqs(parLid).coefs);
                                 layerEqs(j)=sumVars(layerEqs(j));

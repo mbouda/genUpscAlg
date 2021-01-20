@@ -103,7 +103,7 @@ function layerEqs=compClrLyrEqs(iLayer,collarCond,layerEqs,prob,b2,c1,c2,c5,Kx,i
             
         elseif nLegsTarg==2
             keyboard
-            %will need to be both up AND down!
+            %will need to be both up AND down?
         end %if ==0, no need to execute anything
     end
     
@@ -122,8 +122,10 @@ function layerEqs=compClrLyrEqs(iLayer,collarCond,layerEqs,prob,b2,c1,c2,c5,Kx,i
                                Kx,b2,c1,c2,c5,...
                                termed,parents,inLayer);
         jLidEq=iLidLinks==parents(j);
-        lidEqs(jLidEq)=numPassLidDn(j,prob,closeEqs,iLinkClose,extraEqs,iLinkExtra,lidEqs(jLidEq),Kx,b2,c1,c2,c5,termed,parents,inLayer);
-        iLidLinks=cat(1,lidEqs(:).iLink);
+        if any(jLidEq)
+            lidEqs(jLidEq)=numPassLidDn(j,prob,closeEqs,iLinkClose,extraEqs,iLinkExtra,lidEqs(jLidEq),Kx,b2,c1,c2,c5,termed,parents,inLayer);
+            iLidLinks=cat(1,lidEqs(:).iLink);
+        end
     end
 
     %after this, some of the extra Layer equations may remain unresolved

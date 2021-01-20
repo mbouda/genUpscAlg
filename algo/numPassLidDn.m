@@ -70,12 +70,48 @@ function lidEq=numPassLidDn(iSeg,prob,closeEqs,iLinkClose,extraEqs,iLinkExtra,li
         else
             iExEq=ismember(iLinkExtra,iSibs);
             nTargLegs=size(extraEqs(iExEq).targTrack,1);
-            if nTargLegs==2
-                keyboard
-                %need to add code here from where it already exists
+            if nTargLegs==2 && iLinkExtra(iExEq)==iSeg
                 
-                %also, create extra (lid) equations?
-            elseif nTargLegs==1
+                extraEq=numIsolate(extraEqs(iExEq),sprintf('G1%d',sib));
+                extraEq.iLink=sib;
+                
+                massCons=formLinkEq(iSeg,sprintf('G0%d',par),...
+                    {sprintf('G1%d',iSibs(1)),sprintf('G1%d',iSibs(2))},...
+                    [Kx(iSibs(1))/Kx(par) Kx(iSibs(2))/Kx(par)]);   
+                massCons=subsFor(massCons,extraEq.depvar,extraEq.vars,...
+                    extraEq.coefs);
+                massCons=sumVars(massCons);
+                
+                if ismember(massCons.depvar,lidEq.vars)
+                    lidEq=subsFor(lidEq,massCons.depvar,...
+                                massCons.vars,massCons.coefs);
+                    lidEq=sumVars(lidEq);
+                end
+                if strcmp(sprintf('psi0%d',par),lidEq.depvar)
+                    lidEq.depvar=sprintf('psi1%d',iSeg);
+                    lidEq=numIsolate(lidEq,'psiC');
+                end
+                if ismember(extraEqs(iExEq).depvar,lidEq.vars)
+                    lidEq=subsFor(lidEq,extraEqs(iExEq).depvar,...
+                                extraEqs(iExEq).vars,extraEqs(iExEq).coefs);
+                    lidEq=sumVars(lidEq);
+                end
+                if ismember(sprintf('psi1%d',sib),lidEq.vars)
+                    lidEq.vars{strcmp(lidEq.vars,sprintf('psi1%d',sib))}=sprintf('psi1%d',iSeg);
+                    lidEq=sumVars(lidEq);
+                end
+                if ismember(sprintf('G1%d',iSeg),lidEq.vars) && ismember(sprintf('psi1%d',iSeg),lidEq.vars)
+                    lidEq=numPassDn(lidEq,iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+                elseif ismember(sprintf('G1%d',iSeg),lidEq.vars)
+                    lidEq=numPassDnG(lidEq,iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg));
+                elseif ismember(sprintf('psi1%d',iSeg),lidEq.vars)
+                    lidEq=numPassDnPsi(lidEq,iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+                end    
+                if strcmp(sprintf('psiC'),lidEq.depvar)
+                    lidEq=numIsolate(lidEq,sprintf('psi0%d',iSeg));
+                end
+                
+            else
                 massCons=formLinkEq(iSeg,sprintf('G0%d',par),...
                     {sprintf('G1%d',iSibs(1)),sprintf('G1%d',iSibs(2))},...
                     [Kx(iSibs(1))/Kx(par) Kx(iSibs(2))/Kx(par)]);
