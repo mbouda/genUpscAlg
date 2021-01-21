@@ -22,7 +22,7 @@ resTol=1e-12; %relative tolerance on numerical residuals;
 dataDir='./testing/crbTestSet/';
 
 
-nDay=40; 
+nDay=7; 
 rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 
 %rsaFile='RLab_210115_workshop.vtp';

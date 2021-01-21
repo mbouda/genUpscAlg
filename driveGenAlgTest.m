@@ -24,14 +24,7 @@ testSet=addCrbTestCases(testSet,'./testing/crbTestSet/','testSet.mat');
 nTestSys=size(testSet,2);
 collarCond='psiC'; 
 
-%newest changes appear to have stranded link 7 in case 1, layer 5
-    %redefine problem or hooking?
-    %or is it that we should close target (8)... that way, can use 2 Eqs to
-    %elim the 2 remaining vars
-        %looks like getPars does not identify link 8 as par of link 9 ...
-        %not sure why?
-
-for i=1:13 %nTestSys
+for i=1:nTestSys
     testSet(i).nDomLayers=max(testSet(i).inLayer);
     testSet(i).params=testingSetRandParams(testSet(i).parents);
     testSet(i).lyrArch=setLyrArch(testSet(i).parents,testSet(i).inLayer,...
@@ -73,9 +66,14 @@ else
     fprintf(1,'Failed residual test in case %d\n',find(~result));
 end
 
-%looks like currently some residuals on order 1e-10 in the crb cases,
+%looks like currently some residuals grow out of hand in the crb cases,
 %likely due to seleciton of solution/elimination variables at end; to be
 %addressed...
-
+    %maybe it's because we try to minimise the number of coefficients...
+        %if had more of them, they might be smaller, reducing error?
+        %or, could it be due to the random parameter assignment?
+            %did not seem to have these issues with the crb-formed &
+            %derived parameters... (!)
+        
 times=cat(1,testSet(:).time); %times of upscaling, not solution; those are trivial.
 
