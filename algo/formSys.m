@@ -1,10 +1,5 @@
 function sol=formSys(eqs,fullSet,iEq)
 
-    %currently used only to identify which variables are 'bad' and should
-    %be taken out pre-solution
-    %ideally, could expand this function to establish full order and method
-    %of eliminating variables
-
     notZero=fullSet~=0;
     for i=find(notZero)'
         eqs(i).coefs=cat(2,eqs(i).coefs,-1);
@@ -27,7 +22,6 @@ function sol=formSys(eqs,fullSet,iEq)
     isNot=~(isPsiX | isPsiL | isBC);
     
     if sum(isNot)<=nRem
-       
         jL=discoverIndices(allVars(isPsiL),'psiL');
         jX=discoverIndices(allVars(isPsiX),'psiXBar');
         
@@ -61,7 +55,12 @@ function sol=formSys(eqs,fullSet,iEq)
             j(minD)=[];
             dj(minD)=[];
         end
-        varOrd=cat(2,allVars(isNot),allVars(isBC),domVars);
+        
+        if any(isBC)
+            firstL=find(ismember(domVars,sprintf('psiL%d',min(jL))));
+            domVars=cat(2,domVars(1:firstL-1),allVars(isBC),domVars(firstL:end));
+        end
+        varOrd=cat(2,allVars(isNot),domVars);  
         
         cM=zeros(nT,N);
         for i=1:nRem
@@ -79,12 +78,12 @@ function sol=formSys(eqs,fullSet,iEq)
             end
         end
         
-        %here, need to subselect necessary equations and variables... 
-            %how to identify it?
-            %minimal set of equations necessary to eliminate all elimVars
-            %with preference given to retaining vars further down the list
+        [cM,cutVar]=selectEqs(cM,isNot,nT);
+        varOrd(cutVar)=[];
         
-        pres=cM(1:nRem,1:nRem)~=0;
+        nT=size(cM,1);
+        nRem=nT-1;
+        pres=cM(1:nRem,1:nRem)~=0;    
         [i,j]=find(pres);
         for k=1:nRem
             I=i(j==k);

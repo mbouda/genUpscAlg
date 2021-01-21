@@ -2,7 +2,7 @@
 addpath ./algo
 addpath ./testing
 addpath ./fullSol
-addpath ./vtpInput/
+addpath ./vtpInput
 myPool=parpool(6); %used in arriving at full solutions
 
 tol=1e-5;  %relative tolerance for soft check

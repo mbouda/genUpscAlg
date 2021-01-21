@@ -24,7 +24,7 @@ dataDir='./testing/crbTestSet/';
 %dataDir='/run/media/mbouda/OS/Users/Martin/Documents/graphics/';
 %rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_42denni_simulace.vtp';
 
-nDay=22; 
+nDay=28; 
 rsaFile=sprintf('RLab_210117_Lupinus_angustifolius_Chen_2011_%ddenni_simulace.vtp',nDay);
 
 %rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
@@ -63,7 +63,9 @@ collarCond='psiC';
     plant.params.r=plant.R;
     plant.params.kr=plant.kr;
     plant.params.L=plant.L;
+    tic
     testSol=fullSol(plant);
+    toc
     
     plant.check=checkSol(plant,testSol,tol,resTol);
     plant.passSoft=all(cat(1,plant.check(:).allSoft));

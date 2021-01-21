@@ -101,9 +101,9 @@ function layerEqs=compClrLyrEqs(iLayer,collarCond,layerEqs,prob,b2,c1,c2,c5,Kx,i
             %will any ever need passing BOTH up and down?
             %if so, in what order?
             
-        elseif nLegsTarg==2
-            keyboard
-            %will need to be both up AND down?
+%         elseif nLegsTarg==2
+%             keyboard
+            %this option appears not no need any special code...
         end %if ==0, no need to execute anything
     end
     
@@ -129,16 +129,27 @@ function layerEqs=compClrLyrEqs(iLayer,collarCond,layerEqs,prob,b2,c1,c2,c5,Kx,i
     end
 
     %after this, some of the extra Layer equations may remain unresolved
-    
+
     %link across top interface of layer i
 
     for j=prob.targ'
         if ismember(j,baseSegs)
             [layerEqs,prob,nLayers]=numSubsBase(j,prob,collarCond,closeEqs,iLinkClose,extraEqs,iLinkExtra,layerEqs,nLayers,Kx,b2,c1,c2,c5,termed,parents,inLayer);
         else
-            %need to add extraEqs mechanisms into the following function 
             [layerEqs,prob,nLayers]=numConnUDClr(j,layerEqs,closeEqs,iLinkClose,lidEqs,extraEqs,iLinkExtra,collarCond,nLayers,prob,termed,Kx,parents);
         end
     end
 
+    for i=1:nLayers
+        topGradI=discoverIndices(layerEqs(i).vars,'G1');
+        termGrad=ismember(topGradI,iLinkClose);
+        if any(termGrad)
+            for j=find(termGrad)'
+                iClEq=iLinkClose==topGradI(j);
+                layerEqs(i)=subsFor(layerEqs(i),closeEqs(iClEq).depvar,...
+                    closeEqs(iClEq).vars,closeEqs(iClEq).coefs);
+                layerEqs(i)=sumVars(layerEqs(i));
+            end
+        end
+    end
 end
