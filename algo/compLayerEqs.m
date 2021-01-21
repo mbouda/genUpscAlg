@@ -123,6 +123,9 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
     upInts=sort(upInts,'descend');
     downInts=sort(downInts,'ascend');
 
+    if size(upInts,1)~=1 %for some reason, needed now...
+        upInts=upInts';
+    end
     for j=upInts
         [layerEqs,prob,nLayers]=numSubsIntUp(j,prob,closeEqs,iLinkClose,extraEqs,iLinkExtra,...
                                layerEqs,nLayers,...

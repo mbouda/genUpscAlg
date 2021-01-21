@@ -1,7 +1,8 @@
 function [pars,targDtr]=getPars(termed,prob,parents)
 
     pars=parents(prob.iLinks(termed)); %parents of termed
-    pars=pars(~termed(ismember(prob.iLinks,pars))); %that are open
+    %pars=pars(~termed(ismember(prob.iLinks,pars))); %that are open
+    pars=pars(ismember(pars,prob.iLinks(~termed & ismember(prob.iLinks,pars)))); %that are open
     nPars=size(pars,1);
     canClose=false(nPars,1);
     for i=1:nPars

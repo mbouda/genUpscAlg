@@ -27,7 +27,7 @@ dataDir='/run/media/mbouda/OS/Users/Martin/Documents/graphics/';
 rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_42denni_simulace.vtp';
 [plant,zMin,zLims,dz]=importPlant(strcat(dataDir,rsaFile),nLayInit,kr,kx,b); 
 testSet(end+1).parents=plant.parents;
-testSet(end+1).inLayer=plant.inLayer;
+testSet(end).inLayer=plant.inLayer;
     
 save('./testing/crbTestSet/testSet','testSet');
 
