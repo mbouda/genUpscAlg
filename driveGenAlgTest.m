@@ -24,8 +24,8 @@ testSet=addCrbTestCases(testSet,'./testing/crbTestSet/','testSet.mat');
 nTestSys=size(testSet,2);
 collarCond='psiC'; 
 
-%newest changes (hookEqs and solveSys...) have broken case 11, layer 1; appears to
-%solve for worng variables... need to unify that better.
+%newest changes appear to have stranded link 7 in case 1, layer 5
+    %redefine problem or hooking?
 
 for i=1:nTestSys
     testSet(i).nDomLayers=max(testSet(i).inLayer);
