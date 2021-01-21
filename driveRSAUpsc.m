@@ -21,13 +21,10 @@ resTol=1e-12; %relative tolerance on numerical residuals;
 %% File input, preprocessing
 dataDir='./testing/crbTestSet/';
 
-%dataDir='/run/media/mbouda/OS/Users/Martin/Documents/graphics/';
-%rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_42denni_simulace.vtp';
 
-nDay=28; 
-rsaFile=sprintf('RLab_210117_Lupinus_angustifolius_Chen_2011_%ddenni_simulace.vtp',nDay);
+nDay=40; 
+rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 
-%rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 %rsaFile='RLab_210115_workshop.vtp';
 
 kx=5e-5;
@@ -54,7 +51,6 @@ collarCond='psiC';
             plant.lyrArch,plant.params,plant.parents,plant.inLayer);
     end
     plant.time=toc;
-    %want j=4 to eliminate psiL1, not psiBarX2
     
     
   
@@ -85,6 +81,8 @@ if all(result)
 else
     fprintf(1,'Plant failed residual test\n');
 end
+
+cat(1,plant.check(:).maxRes)
 
 times=cat(1,plant.time); %times of upscaling, not solution; those are trivial.
 

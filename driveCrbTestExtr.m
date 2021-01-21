@@ -16,7 +16,7 @@ testSet(1).inLayer=plant.inLayer;
 
 dataDir='./testing/crbTestSet/';
 
-nDay=[10:3:16 22:3:28];
+nDay=[10:3:16 22:3:28 34:3:40];
 for i=1:3
     rsaFile=sprintf('RLab_210117_Lupinus_angustifolius_Chen_2011_%ddenni_simulace.vtp',nDay(i));
     [plant,zMin,zLims,dz]=importPlant(strcat(dataDir,rsaFile),nLayInit,kr,kx,b); 

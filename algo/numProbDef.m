@@ -1,9 +1,5 @@
 function prob=numProbDef(iLayer,acroLrs,nxtLr,basiLrs,prvLr,parents,inLayer)
 
-%     isInLayer=inLayer==iLayer;
-%     ~isInLayer(parents(isInLayer))
-%     ~isInLayer(parents(isInLayer))
-
     top=iLayer;
     bot=iLayer;
     low=max(inLayer);  %bring in from outside!
@@ -27,7 +23,7 @@ function prob=numProbDef(iLayer,acroLrs,nxtLr,basiLrs,prvLr,parents,inLayer)
         
         %for current case, not optimal: includes 2 b/c closest to 3, even
         %though can do from layers 3--5
-        if nDOFDn<=(provBot-top)
+        if nDOFDn<=(provBot-top) && top+1<=iLayer
             %test reduction by 1 from top:
             nDOFt=subDomDOFs(top+1,provBot,acroLrs,nxtLr,basiLrs,prvLr,parents,inLayer);
             if nDOFt<=(provBot-(top+1))
@@ -37,7 +33,7 @@ function prob=numProbDef(iLayer,acroLrs,nxtLr,basiLrs,prvLr,parents,inLayer)
             
             bot=provBot;
             nDOF=nDOFDn;
-        elseif nDOFUp<=(bot-provTop)
+        elseif nDOFUp<=(bot-provTop) && bot-1>=iLayer
             %test reduction by 1 from bot:
             nDOFt=subDomDOFs(provTop,bot-1,acroLrs,nxtLr,basiLrs,prvLr,parents,inLayer);
             if nDOFt<=((bot-1)-provTop)
