@@ -174,7 +174,12 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
         end
     end
     
-    
+    %% below this, meant to fix systems with subsystems of fewer variables than equations
+        %but seems to break more cases than helps
+        %likely should integrate it into formSys, and supply necessary
+        %inputs to that...
+        %there could check if can also eliminate some equations, all at once
+        %and ideally arrive at the best-shaped system...
     %put this stuff below into standalone function...
     allVars=unique(cat(2,layerEqs(:).vars));
     N=size(allVars,2);
@@ -192,6 +197,9 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
     depVars=unique(depVars);
     
     toElim=setdiff(allVars(isNot),depVars);
+    %should also check if they're in the target equation,. no? don't bother
+    %if not(?)
+    
     nElim=size(toElim,2);
     nEqs=size(layerEqs,1);
     varInEq=false(nEqs,nElim);
@@ -220,7 +228,7 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
                             
                             isNew=true;
                             for l=1:nC
-                                isNew=isNew & ~ismember(badCombs{l},newComb,'rows');
+                                isNew=isNew & ~all(ismember(newComb,badCombs{l}));
                             end
                             if isNew
                                 badCombs{end+1,1}=[i oth(combs(k,:))];
@@ -236,9 +244,21 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
     
     nC=size(badCombs,1);
     if nC>1
-        %eliminate those sets that are fully contained in others 
-        keyboard
-        
+        for i=1:nC
+            oC=setdiff(1:nC,i);
+            isCont=false(nC-1,1);
+            for j=oC
+                isCont(j)=all(ismember(badCombs{i},badCombs{j}));
+            end
+            if any(isCont)
+                badCombs{i}=[];
+            end
+        end
+        remComb=false(nC,1);
+        for i=1:nC
+            remComb(i)=numel(badCombs{i})==0;
+        end
+        badCombs(remComb)=[];
         nC=size(badCombs,1);
     end
     
@@ -249,7 +269,8 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
     psiHang=discoverIndices(hangVars,'psi1');
     gHang=discoverIndices(hangVars,'G1');
     if any(gHang)
-        keyboard
+        warning('Hanging G1','hanG');
+        %keyboard
         %if legitimately here, would need another king of hook equation,
         %since for now, they work for closed links
     end
