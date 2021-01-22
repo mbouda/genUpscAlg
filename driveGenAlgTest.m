@@ -19,14 +19,21 @@ resTol=1e-12; %relative tolerance on numerical residuals;
     %variation in parameters.
 %%
 testSet=formTestSet();
-testSet=addCrbTestCases(testSet,'./testing/crbTestSet/','testSet.mat');
+nSimpleSys=size(testSet,2);
+[testSet,crbParams]=addCrbTestCases(testSet,'./testing/crbTestSet/','testSet.mat');
 
 nTestSys=size(testSet,2);
 collarCond='psiC'; 
 
 for i=1:nTestSys
     testSet(i).nDomLayers=max(testSet(i).inLayer);
-    testSet(i).params=testingSetRandParams(testSet(i).parents);
+    if i<=nSimpleSys
+        testSet(i).params=testingSetRandParams(testSet(i).parents);  
+    else
+        %testSet(i).params=addCrbParams(testSet(i),crbParams(i-nSimpleSys));
+        testSet(i).params=crbParams(i-nSimpleSys);
+    end
+    
     testSet(i).lyrArch=setLyrArch(testSet(i).parents,testSet(i).inLayer,...
         testSet(i).params.nL);
     
@@ -66,14 +73,15 @@ else
     fprintf(1,'Failed residual test in case %d\n',find(~result));
 end
 
-%looks like currently some residuals grow out of hand in the crb cases,
-%likely due to seleciton of solution/elimination variables at end; to be
-%addressed...
-    %maybe it's because we try to minimise the number of coefficients...
+cat(1,testSet(17).check(:).maxRes)
+
+%looks like currently some residuals grow out of hand in the crb cases
+    %appears to be due to random assignment of parameters -- with params
+    %from crb functions, error <1e-12
+
+%seleciton of solution/elimination variables at end to be addressed...
+    %tries to minimise the number of coefficients, though not sure if well...
         %if had more of them, they might be smaller, reducing error?
-        %or, could it be due to the random parameter assignment?
-            %did not seem to have these issues with the crb-formed &
-            %derived parameters... (!)
         
 times=cat(1,testSet(:).time); %times of upscaling, not solution; those are trivial.
 

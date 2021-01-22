@@ -175,4 +175,92 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
     end
     
     
+    %put this stuff below into standalone function...
+    allVars=unique(cat(2,layerEqs(:).vars));
+    N=size(allVars,2);
+    
+    isPsiX=startsWith(allVars,'psiXBar');
+    isPsiL=startsWith(allVars,'psiL');
+    isBC=endsWith(allVars,'C');
+    isNot=~(isPsiX | isPsiL | isBC);
+    
+    depVars=cat(2,{layerEqs(:).depvar});
+    remEq=ismember(depVars,sprintf('psiXBar%d',iLayer)) | ~(startsWith(depVars,'psiX') | startsWith(depVars,'psiL') | endsWith(depVars,'C'));
+    %remove also the psiL equations?
+    
+    
+    depVars=unique(depVars);
+    
+    toElim=setdiff(allVars(isNot),depVars);
+    nElim=size(toElim,2);
+    nEqs=size(layerEqs,1);
+    varInEq=false(nEqs,nElim);
+    for i=1:nElim
+        for j=1:nEqs
+            varInEq(j,i)=ismember(toElim{i},layerEqs(j).vars);
+        end
+    end
+    varInEq(remEq',:)=[];
+
+    badCombs=cell(0,1);
+    for i=1:nElim
+        if sum(varInEq(:,i))<nElim
+            oth=setdiff(1:nElim,i);
+            for j=1:nElim-1
+                set=false(1,size(oth,2));
+                set(1:j)=true;
+                combs=unique(perms(set),'rows');
+                ncombs=size(combs,1);
+                for k=1:ncombs
+                    if sum(varInEq(:,i) | varInEq(:,oth(combs(k,:))))<j+1
+                        newComb=sort([i oth(combs(k,:))]);
+                        nC=numel(badCombs);
+                        if nC>0
+                            %only add if separate from all existing ones
+                            
+                            isNew=true;
+                            for l=1:nC
+                                isNew=isNew & ~ismember(badCombs{l},newComb,'rows');
+                            end
+                            if isNew
+                                badCombs{end+1,1}=[i oth(combs(k,:))];
+                            end
+                        else
+                            badCombs{end+1,1}=newComb;
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    nC=size(badCombs,1);
+    if nC>1
+        %eliminate those sets that are fully contained in others 
+        keyboard
+        
+        nC=size(badCombs,1);
+    end
+    
+    hangVars=cell(1,0);
+    for i=1:nC
+        hangVars=cat(2,hangVars,toElim(badCombs{i}(1:end-1)));
+    end
+    psiHang=discoverIndices(hangVars,'psi1');
+    gHang=discoverIndices(hangVars,'G1');
+    if any(gHang)
+        keyboard
+        %if legitimately here, would need another king of hook equation,
+        %since for now, they work for closed links
+    end
+    if any(psiHang)
+        hookEqs=connectHangingTarg(psiHang,closeEqs,iLinkClose,prob,parents,b2,c1,c2,c5,Kx,inLayer);
+        hookEqs=rmfield(hookEqs,'iLink');
+        [hookEqs(:).kLayer]=deal('H');
+        layerEqs=cat(1,layerEqs,hookEqs);
+    end
+    
+%we now know which variable combinations occur in fewer equations than
+%there are vars in them need to make hook eqs for these... 
+   
 end

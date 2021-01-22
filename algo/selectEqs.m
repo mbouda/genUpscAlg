@@ -52,7 +52,7 @@ function [cM,cut]=selectEqs(cM,isNot,nT)
     end
     
     %HERE: if can get rid of further variables by adding equations, without
-    %adding isNot variables, then should!
+    %adding isNot variables, then should?
     
     cM=cM(nT-nE+1:nT,:);
     

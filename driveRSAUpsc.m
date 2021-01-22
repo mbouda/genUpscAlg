@@ -21,9 +21,11 @@ resTol=1e-12; %relative tolerance on numerical residuals;
 %% File input, preprocessing
 dataDir='./testing/crbTestSet/';
 
+nDay=16;
+rsaFile=sprintf('RLab_210117_Lupinus_angustifolius_Chen_2011_%ddenni_simulace.vtp',nDay);
 
-nDay=7; 
-rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
+% nDay=7; 
+% rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 
 %rsaFile='RLab_210115_workshop.vtp';
 
@@ -82,7 +84,7 @@ else
     fprintf(1,'Plant failed residual test\n');
 end
 
-cat(1,plant.check(:).maxRes)
+resMax=cat(1,plant.check(:).maxRes);
 
 times=cat(1,plant.time); %times of upscaling, not solution; those are trivial.
 
