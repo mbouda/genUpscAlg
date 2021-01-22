@@ -21,11 +21,8 @@ resTol=1e-12; %relative tolerance on numerical residuals;
 %% File input, preprocessing
 dataDir='./testing/crbTestSet/';
 
-nDay=16;
-rsaFile=sprintf('RLab_210117_Lupinus_angustifolius_Chen_2011_%ddenni_simulace.vtp',nDay);
-
-% nDay=7; 
-% rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
+nDay=7; 
+rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 
 %rsaFile='RLab_210115_workshop.vtp';
 
@@ -39,6 +36,12 @@ nLayInit=8;
 collarCond='psiC'; 
 
 %% Upscaling
+
+%layer 3 of 7-day Pisum sativum has unclosed hanging top; so need to figure
+%out what to do with bots or else distribute targs better to disconnected
+%netowrk sectors
+%also: targ(2) is descendant of targ(1) ...
+    %this is because that branch switches up/down between layers
 
     plant.nDomLayers=nLayInit;
     plant.lyrArch=setLyrArch(plant.parents,plant.inLayer,plant.nL);

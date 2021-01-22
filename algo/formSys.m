@@ -81,9 +81,14 @@ function sol=formSys(eqs,fullSet,iEq)
         [cM,cutVar]=selectEqs(cM,isNot,nT);
         varOrd(cutVar)=[];
         
+        
+        
         nT=size(cM,1);
         nRem=nT-1;
-        pres=cM(1:nRem,1:nRem)~=0;    
+        pres=cM(1:nRem,1:nRem)~=0;
+        
+        %[cM,pres,nRem,nT]=addRows();
+        
         [i,j]=find(pres);
         for k=1:nRem
             I=i(j==k);
