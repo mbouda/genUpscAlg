@@ -92,46 +92,48 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
         %fails for pisum sativum... need to traverse actual network.. 
 
     %all others are upLinks?
-    downLinks=idDownLinks(prob.targ,prob.tops,parents);
+    downLinks=idDownLinks(prob.targ,allTops',parents);
     downInts=intersect(downLinks,prob.ints)';
-    upInts=setdiff(prob.ints,downInts);
+    upInts=setdiff(setdiff(prob.ints,downInts),prob.iLinks(termed))';
+    
+    
     %downInts=intersect(prob.ints(inLayer(prob.ints)<iLayer),prob.iLinks(~termed))';
     %upInts=flipud(intersect(prob.ints(inLayer(prob.ints)>=iLayer),prob.iLinks(~termed)))';
     
-%     for j=1:nOJ
-%         nLegsTarg=numel(extraEqs(j).targTrack);
-%         if nLegsTarg==1
-%             downExtra=ismember(downInts,iLinkExtra(j));
-%             downExtra=runDownExtras(iLinkExtra(j),downExtra,downInts,parents);
-%             topExtra=ismember(prob.tops,iLinkExtra(j));
-%             downExtra=runDownExtras(iLinkExtra(j),downExtra,downInts,parents);
-%             if any(topExtra)
-%                 upInts=cat(2,upInts,prob.tops(topExtra));
-%             end
-%             upInts=cat(2,upInts,downInts(downExtra));
-%             downInts=downInts(~downExtra);
-%             sib=setdiff(cat(1,extraEqs(j).helperEqs(:).iLink),extraEqs(j).iLink);
-%             if ~ismember(sib,downInts)
-%                 downInts=cat(2,downInts,sib);
-%             end
-% %         elseif nLegsTarg==2
-% %             keyboard
-%             
-%             %will need to be both up AND down?
-%             %take both siblings
-%             %do not take off down list
-%             %add to up list? (along with relevant descendants)
-%             %will need to subs on way down! but maybe doing upward is
-%             %duplication of extraEq work... since we know it goes to targ
-%             %anyway...
-%             
-%             %seems like only need to add to up list descendants that do NOT
-%             %terminate in targ (?), i.e. just do the first part of the
-%             %conditional
-%             
-%         end %if ==0, no need to execute anything
-%     end
-%     downInts=cat(2,downInts,topTermSibs);
+    for j=1:nOJ
+        nLegsTarg=numel(extraEqs(j).targTrack);
+        if nLegsTarg==1
+            downExtra=ismember(downInts,iLinkExtra(j));
+            downExtra=runDownExtras(iLinkExtra(j),downExtra,downInts,parents);
+            topExtra=ismember(prob.tops,iLinkExtra(j));
+            downExtra=runDownExtras(iLinkExtra(j),downExtra,downInts,parents);
+            if any(topExtra)
+                upInts=cat(2,upInts,prob.tops(topExtra));
+            end
+            upInts=cat(2,upInts,downInts(downExtra));
+            downInts=downInts(~downExtra);
+            sib=setdiff(cat(1,extraEqs(j).helperEqs(:).iLink),extraEqs(j).iLink);
+            if ~ismember(sib,downInts)
+                downInts=cat(2,downInts,sib);
+            end
+%         elseif nLegsTarg==2
+%             keyboard
+            
+            %will need to be both up AND down?
+            %take both siblings
+            %do not take off down list
+            %add to up list? (along with relevant descendants)
+            %will need to subs on way down! but maybe doing upward is
+            %duplication of extraEq work... since we know it goes to targ
+            %anyway...
+            
+            %seems like only need to add to up list descendants that do NOT
+            %terminate in targ (?), i.e. just do the first part of the
+            %conditional
+            
+        end %if ==0, no need to execute anything
+    end
+    downInts=cat(2,downInts,topTermSibs);
     
     upInts=sort(upInts,'descend');
     downInts=sort(downInts,'ascend');
@@ -194,7 +196,9 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
     nDOF=sum(startsWith(cat(1,{layerEqs(:).depvar}),'psiXBar'))-1;
     allVars=unique(cat(2,layerEqs(:).vars));
     nVars=sum(startsWith(allVars,'psi1') | startsWith(allVars,'G1'));
-    if nDOF<nVars
+    nH=sum(strcmp('H',cat(1,{layerEqs(:).kLayer})));
+    n0=sum(strcmp('0',cat(1,{layerEqs(:).depvar})));
+    if nDOF+nH+n0<nVars
         nExtraEqs=nVars-nDOF;
         %check that prob.targ is on unforked path from top to bot
         hasJunc=false(size(prob.targ));

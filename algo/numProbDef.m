@@ -113,17 +113,19 @@ function prob=numProbDef(iLayer,acroLrs,nxtLr,basiLrs,prvLr,parents,inLayer)
             end
             
             remnSect=setdiff((1:nSect)',targSect);
-            nAdd=nTarg-nTargs;
-            for i=1:nAdd
-                canBeTarg=inLayer(sectors{remnSect(i)})==iLayer & ...
-                    inLayer(parents((sectors{remnSect(i)})))~=iLayer;
-                if any(canBeTarg)
-                    prob.targ=cat(1,prob.targ,sectors{remnSect(i)}(find(canBeTarg,1)));
-                elseif any(ismember(sectors{remnSect(i)},prob.tops))
-                    prob.targ=cat(1,prob.targ,sectors{remnSect(i)}(ismember(sectors{remnSect(i)},prob.tops)));
-                else
-                    crosses=inLayer(sectors{remnSect(i)})~=inLayer(parents((sectors{remnSect(i)})));
-                    prob.targ=cat(1,prob.targ,sectors{remnSect(i)}(find(crosses,1)));
+            if any(remnSect)
+                nAdd=nTarg-nTargs;
+                for i=1:nAdd
+                    canBeTarg=inLayer(sectors{remnSect(i)})==iLayer & ...
+                        inLayer(parents((sectors{remnSect(i)})))~=iLayer;
+                    if any(canBeTarg)
+                        prob.targ=cat(1,prob.targ,sectors{remnSect(i)}(find(canBeTarg,1)));
+                    elseif any(ismember(sectors{remnSect(i)},prob.tops))
+                        prob.targ=cat(1,prob.targ,sectors{remnSect(i)}(ismember(sectors{remnSect(i)},prob.tops)));
+                    else
+                        crosses=inLayer(sectors{remnSect(i)})~=inLayer(parents((sectors{remnSect(i)})));
+                        prob.targ=cat(1,prob.targ,sectors{remnSect(i)}(find(crosses,1)));
+                    end
                 end
             end
         end

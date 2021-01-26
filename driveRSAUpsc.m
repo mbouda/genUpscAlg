@@ -40,8 +40,7 @@ collarCond='psiC';
 %layer 3 of 7-day Pisum sativum has unclosed hanging top; so need to figure
 %out what to do with bots or else distribute targs better to disconnected
 %netowrk sectors
-%also: targ(2) is descendant of targ(1) ...
-    %this is because that branch switches up/down between layers
+
 
     plant.nDomLayers=nLayInit;
     plant.lyrArch=setLyrArch(plant.parents,plant.inLayer,plant.nL);

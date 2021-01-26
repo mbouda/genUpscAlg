@@ -73,7 +73,7 @@ else
     fprintf(1,'Failed residual test in case %d\n',find(~result));
 end
 
-cat(1,testSet(24).check(:).maxRes)
+cat(1,testSet(21).check(:).maxRes)
 
 %looks like currently some residuals grow out of hand in the crb cases
     %appears to be due to random assignment of parameters -- with params

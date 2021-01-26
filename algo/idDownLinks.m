@@ -6,12 +6,12 @@ function downLinks=idDownLinks(targs,tops,parents)
         linkList=[];
         if ~ismember(targs(i),tops)
             l=parents(targs(i));
-            while ~ismember(l,tops)
+            while ~ismember(l,tops) % && l>0 %should not be necessary
                 linkList=cat(1,linkList,l);
                 l=parents(l);
             end
             lists{i}=linkList;
         end
     end
-    downLinks=union(lists{:});
+    downLinks=cat(1,lists{:});    
 end

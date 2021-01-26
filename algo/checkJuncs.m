@@ -8,7 +8,7 @@ function hasJunc=checkJuncs(targ,tops,bots,parents)
     end
     
     l=targ;
-    while ~hasJunc && ~ismember(l,bots)
+    while ~hasJunc && any(l) && ~ismember(l,bots)
         hasJunc=sum(parents==l)>1;
         l=find(parents==l);
     end

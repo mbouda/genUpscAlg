@@ -6,8 +6,8 @@ function sectors=pickSectors(tops,iLinks,parents)
         sectors{i}=growSec(tops(i),[],parents,iLinks);
     end
     
-    if any(setdiff(iLinks,union(sectors{:})))
-        warning('not all links sectored out','extrL')
+    if any(setdiff(iLinks,cat(1,sectors{:})))
+        warning('not all links sectored out','extrL');
     end
     
 end
