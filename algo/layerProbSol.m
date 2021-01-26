@@ -49,27 +49,21 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
         end
         J=sort(find(elimLayers),'descend');
         
+        layerEqs=truncateZeroCoeffs(layerEqs,nLayers);
         jL=1:size(layerEqs,1);
         for j=J
             %add test for duplication??
-                for k=setdiff(jL,j)
-                    if ismember(layerEqs(j).depvar,layerEqs(k).vars)
-                        layerEqs(k)=subsFor(layerEqs(k),layerEqs(j).depvar,...
-                            layerEqs(j).vars,layerEqs(j).coefs);
-                        layerEqs(k)=sumVars(layerEqs(k));
-                        if ismember(layerEqs(k).depvar,layerEqs(k).vars)
-                            layerEqs(k)=numIsolDep(layerEqs(k));
-                        end
+            for k=setdiff(jL,j)
+                if ismember(layerEqs(j).depvar,layerEqs(k).vars)
+                    layerEqs(k)=subsFor(layerEqs(k),layerEqs(j).depvar,...
+                        layerEqs(j).vars,layerEqs(j).coefs);
+                    layerEqs(k)=sumVars(layerEqs(k));
+                    if ismember(layerEqs(k).depvar,layerEqs(k).vars)
+                        layerEqs(k)=numIsolDep(layerEqs(k));
                     end
                 end
-            if any(layerEqs(j).coefs==0) || any(abs(layerEqs(j).coefs)==1) || ...
-                    any(abs(layerEqs(j).coefs)<(1e-16*max(abs(layerEqs(j).coefs)))) 
-            else
-                warning('duplicate equation? zero/one coeffs','degenCoefs')
-                %shoulad actually likely just remove these coefficients
-                %before this loop...
-                %use: layerEqs=truncateZeroCoeffs(layerEqs,nLayers);
             end
+            layerEqs=truncateZeroCoeffs(layerEqs,nLayers);
             jL=setdiff(jL,j);
         end
         layerEqs(J)=[];

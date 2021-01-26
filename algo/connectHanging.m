@@ -1,4 +1,4 @@
-function [hookEqs,nHL]=connectHanging(hangLinks,closeEqs,iLinkClose,prob,parents,b2,c1,c2,c5,Kx,inLayer)
+function hookEqs=connectHanging(hangLinks,closeEqs,iLinkClose,prob,parents,b2,c1,c2,c5,Kx,inLayer)
 
         nHL=size(hangLinks,1);
         
@@ -49,5 +49,6 @@ function [hookEqs,nHL]=connectHanging(hangLinks,closeEqs,iLinkClose,prob,parents
             hookEqs(i)=attachHookEq(hookEqs(i),hits(i),prob,Kx,b2,c1,c2,c5,parents,inLayer);
         end
         
-        
+        hookEqs=rmfield(hookEqs,'iLink');
+        [hookEqs(:).kLayer]=deal('H');
 end

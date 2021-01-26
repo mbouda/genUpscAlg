@@ -67,58 +67,71 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
         iLinkExtra=[];
         nOJ=0;
     end
-            
+           
     %identify hanging elements
     allTops=union(prob.tops,topTerms);
     hangLinks=identifyHanging(allTops,prob,parents);
     if any(hangLinks)
-        [hookEqs,nHooks]=connectHanging(hangLinks,closeEqs,iLinkClose,prob,parents,b2,c1,c2,c5,Kx,inLayer);
-        %construct minimal network that connects each hanging Link to 1(+)
-        %targ or one other hanging link...
-        %need one equation for each hanger
-        hookEqs=rmfield(hookEqs,'iLink');
-        [hookEqs(:).kLayer]=deal('H');
+            hangClosed=ismember(hangLinks,iLinkClose);
+            hookEqs=connectHanging(hangLinks(hangClosed),closeEqs,iLinkClose,prob,parents,b2,c1,c2,c5,Kx,inLayer);
+            %construct minimal network that connects each hanging Link to 1(+)
+            %targ or one other hanging link...
+            %need one equation for each hanger
+            
+        if any(~hangClosed)
+            hookUnclEqs=connectHangingUnclosed(hangLinks(~hangClosed),prob,parents,b2,c1,c2,c5,Kx,inLayer);
+            hookEqs=cat(1,hookEqs,hookUnclEqs);
+        else
+            
+        end
     else
         hookEqs=[];
-        nHooks=0; %looks like don't need this...
     end
     
-    % ints in order...
-    downInts=intersect(prob.ints(inLayer(prob.ints)<iLayer),prob.iLinks(~termed))';
-    upInts=flipud(intersect(prob.ints(inLayer(prob.ints)>=iLayer),prob.iLinks(~termed)))';
+    % this assumes in a strong way that acropetal is down, basipetal is up
+        %fails for pisum sativum... need to traverse actual network.. 
+
+    %all others are upLinks?
+    downLinks=idDownLinks(prob.targ,prob.tops,parents);
+    downInts=intersect(downLinks,prob.ints)';
+    upInts=setdiff(prob.ints,downInts);
+    %downInts=intersect(prob.ints(inLayer(prob.ints)<iLayer),prob.iLinks(~termed))';
+    %upInts=flipud(intersect(prob.ints(inLayer(prob.ints)>=iLayer),prob.iLinks(~termed)))';
     
-    for j=1:nOJ
-        nLegsTarg=numel(extraEqs(j).targTrack);
-        if nLegsTarg==1
-            downExtra=ismember(downInts,iLinkExtra(j));
-            downExtra=runDownExtras(iLinkExtra(j),downExtra,downInts,parents);
-            topExtra=ismember(prob.tops,iLinkExtra(j));
-            downExtra=runDownExtras(iLinkExtra(j),downExtra,downInts,parents);
-            upInts=cat(2,upInts,prob.tops(topExtra));
-            upInts=cat(2,upInts,downInts(downExtra));
-            downInts=downInts(~downExtra);
-            sib=setdiff(cat(1,extraEqs(j).helperEqs(:).iLink),extraEqs(j).iLink);
-            if ~ismember(sib,downInts)
-                downInts=cat(2,downInts,sib);
-            end
-%         elseif nLegsTarg==2
-%             keyboard
-            
-            %will need to be both up AND down?
-            %take both siblings
-            %do not take off down list
-            %add to up list? (along with relevant descendants)
-            %will need to subs on way down! but maybe doing upward is
-            %duplication of extraEq work... since we know it goes to targ
-            %anyway...
-            
-            %seems like only need to add to up list descendants that do NOT
-            %terminate in targ (?), i.e. just do the first part of the
-            %conditional
-            
-        end %if ==0, no need to execute anything
-    end
-    downInts=cat(2,downInts,topTermSibs);
+%     for j=1:nOJ
+%         nLegsTarg=numel(extraEqs(j).targTrack);
+%         if nLegsTarg==1
+%             downExtra=ismember(downInts,iLinkExtra(j));
+%             downExtra=runDownExtras(iLinkExtra(j),downExtra,downInts,parents);
+%             topExtra=ismember(prob.tops,iLinkExtra(j));
+%             downExtra=runDownExtras(iLinkExtra(j),downExtra,downInts,parents);
+%             if any(topExtra)
+%                 upInts=cat(2,upInts,prob.tops(topExtra));
+%             end
+%             upInts=cat(2,upInts,downInts(downExtra));
+%             downInts=downInts(~downExtra);
+%             sib=setdiff(cat(1,extraEqs(j).helperEqs(:).iLink),extraEqs(j).iLink);
+%             if ~ismember(sib,downInts)
+%                 downInts=cat(2,downInts,sib);
+%             end
+% %         elseif nLegsTarg==2
+% %             keyboard
+%             
+%             %will need to be both up AND down?
+%             %take both siblings
+%             %do not take off down list
+%             %add to up list? (along with relevant descendants)
+%             %will need to subs on way down! but maybe doing upward is
+%             %duplication of extraEq work... since we know it goes to targ
+%             %anyway...
+%             
+%             %seems like only need to add to up list descendants that do NOT
+%             %terminate in targ (?), i.e. just do the first part of the
+%             %conditional
+%             
+%         end %if ==0, no need to execute anything
+%     end
+%     downInts=cat(2,downInts,topTermSibs);
     
     upInts=sort(upInts,'descend');
     downInts=sort(downInts,'ascend');
@@ -174,5 +187,37 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
         end
     end
     
-  
+    %need to also make extraEquations for targs that are on single strand
+    %from top to bot, if bot is meant to be closed by probDef DOF
+    %accounting...
+    
+    nDOF=sum(startsWith(cat(1,{layerEqs(:).depvar}),'psiXBar'))-1;
+    allVars=unique(cat(2,layerEqs(:).vars));
+    nVars=sum(startsWith(allVars,'psi1') | startsWith(allVars,'G1'));
+    if nDOF<nVars
+        nExtraEqs=nVars-nDOF;
+        %check that prob.targ is on unforked path from top to bot
+        hasJunc=false(size(prob.targ));
+        for i=1:size(prob.targ,1)
+            hasJunc(i)=checkJuncs(prob.targ(i),prob.tops,prob.bots,parents);
+        end
+        if any(~hasJunc)
+            canClose=prob.targ(~hasJunc);
+            canClose=canClose(1:nExtraEqs);  %will error if there are other missing equations...
+            nExtraClose=size(canClose,1);
+            for i=1:nExtraClose
+                j=distalTipSrch(canClose(i),parents);
+                nTerms=size(j,1);
+                [locCloseEqs,jLinkClose]=numCloseTerms(j,b2(j),c1(j),c2(j),inLayer(j),nTerms);
+                [extraCloseEq,~]=numCloseToSeg(parents(canClose(i)),locCloseEqs,jLinkClose,prob,Kx,b2,c1,c2,c5,parents,inLayer);
+                for j=1:nLayers
+                    if ismember(extraCloseEq.depvar,layerEqs(j).vars)
+                        layerEqs(j)=subsFor(layerEqs(j),extraCloseEq.depvar,...
+                            extraCloseEq.vars,extraCloseEq.coefs);
+                        layerEqs(j)=sumVars(layerEqs(j));
+                    end
+                end
+            end
+        end
+    end
 end
