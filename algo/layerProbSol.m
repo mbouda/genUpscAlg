@@ -1,5 +1,5 @@
 function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLayer)
-
+keyboard
     prob=numProbDef(iLayer,lyrArch.acroLrs,lyrArch.nxtLr,lyrArch.basiLrs,lyrArch.prvLr,parents,inLayer);
     
     nLayers=size(prob.kLayers,1);

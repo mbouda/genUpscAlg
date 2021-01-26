@@ -1,5 +1,8 @@
 function [lands,hit]=srchTarg(l,parents,targets,bots)
 
+if l==480
+    keyboard
+end
     [lands,j]=ismember(l,targets);
     
     if ~lands
@@ -8,7 +11,8 @@ function [lands,hit]=srchTarg(l,parents,targets,bots)
             d=find(parents==l);
             s=setdiff(find(parents==parents(l)),l);
             if any(s)
-                d=cat(1,d,s);
+                d=cat(1,d,s);  %by always including siblings, bump back and forth on junctions...
+                                %with possibility of infinite repetition...
             end
             nD=size(d,1);
             i=0;

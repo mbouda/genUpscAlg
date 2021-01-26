@@ -1,5 +1,5 @@
 function hookEqs=connectHanging(hangLinks,closeEqs,iLinkClose,prob,parents,b2,c1,c2,c5,Kx,inLayer)
-
+keyboard
         nHL=size(hangLinks,1);
         
         isConn=false(nHL,1);
@@ -7,7 +7,7 @@ function hookEqs=connectHanging(hangLinks,closeEqs,iLinkClose,prob,parents,b2,c1
         hits=zeros(nHL,1);
         pars=parents(hangLinks);
         
-        %alg based on bad ass'n: max(pars) may already be connected, no?
+        %alg based on ass'n: max(pars) may already be connected, no?
         while any(~isConn)
             
             [~,imp]=max(pars);

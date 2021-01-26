@@ -1,5 +1,5 @@
 function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,parents,nLayers)
-
+keyboard
     topTerms=intersect(prob.terms,prob.tops);
     topTermSibs=[];
     if any(topTerms)

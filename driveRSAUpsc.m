@@ -21,7 +21,7 @@ resTol=1e-12; %relative tolerance on numerical residuals;
 %% File input, preprocessing
 dataDir='./testing/crbTestSet/';
 
-nDay=7; 
+nDay=10; 
 rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 
 %rsaFile='RLab_210115_workshop.vtp';
@@ -37,9 +37,12 @@ collarCond='psiC';
 
 %% Upscaling
 
-%layer 3 of 7-day Pisum sativum has unclosed hanging top; so need to figure
-%out what to do with bots or else distribute targs better to disconnected
-%netowrk sectors
+%layer 6 of 10-day Pisum sativum, srchTarg is shown to form infinite loop
+    %because it checks sibling of checked link ...  meaning it bounces back
+    %and forth
+    %need to remove and adapt calling code, so that sibling of initial link
+    %is checked but after that daughters follow from parents
+        %also, will need to adapt to what is output... parents/dtrs...
 
 
     plant.nDomLayers=nLayInit;
