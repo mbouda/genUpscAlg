@@ -28,15 +28,30 @@ for i=1:size(nDay,2)
     testSet(i+1).params=plant.params;
 end
 
+n=size(testSet,2);
+
 dataDir='/run/media/mbouda/OS/Users/Martin/Documents/graphics/';
 rsaFile='Lupinus_angustifolius_Chen_2011_LAB201008_42denni_simulace.vtp';
 [plant,zMin,zLims,dz]=importPlant(strcat(dataDir,rsaFile),nLayInit,kr,kx,b); 
 plant.params=addTestParams(plant);
-testSet(end+1).parents=plant.parents;
-testSet(end).inLayer=plant.inLayer;
-testSet(end).params=plant.params;
+testSet(n+1).parents=plant.parents;
+testSet(n+1).inLayer=plant.inLayer;
+testSet(n+1).params=plant.params;
     
+n=size(testSet,2);
+dataDir='./testing/crbTestSet/';
+
+nDay=7:3:10;
+for i=1:size(nDay,2)
+    rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay(i));
+    [plant,zMin,zLims,dz]=importPlant(strcat(dataDir,rsaFile),nLayInit,kr,kx,b); 
+    plant.params=addTestParams(plant);
+    testSet(i+n).parents=plant.parents;
+    testSet(i+n).inLayer=plant.inLayer;
+    testSet(i+n).params=plant.params;
+end
+
 save('./testing/crbTestSet/testSet','testSet');
 
-%rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
+
 %rsaFile='RLab_210115_workshop.vtp';
