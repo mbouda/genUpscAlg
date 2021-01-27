@@ -21,7 +21,7 @@ resTol=1e-12; %relative tolerance on numerical residuals;
 %% File input, preprocessing
 dataDir='./testing/crbTestSet/';
 
-nDay=10; 
+nDay=13; 
 rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 
 %rsaFile='RLab_210115_workshop.vtp';
@@ -37,14 +37,6 @@ collarCond='psiC';
 
 %% Upscaling
 
-%layer 6 of 10-day Pisum sativum, srchTarg is shown to form infinite loop
-    %because it checks sibling of checked link ...  meaning it bounces back
-    %and forth
-    %need to remove and adapt calling code, so that sibling of initial link
-    %is checked but after that daughters follow from parents
-        %also, will need to adapt to what is output... parents/dtrs...
-
-
     plant.nDomLayers=nLayInit;
     plant.lyrArch=setLyrArch(plant.parents,plant.inLayer,plant.nL);
     fldPrp=cell(plant.nDomLayers,1);
@@ -52,13 +44,18 @@ collarCond='psiC';
     plant.prob=struct('iLinks',fldPrp,'kLayers',fldPrp,'terms',fldPrp,...
         'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp);
     plant.sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
+    
+    %looks like in Pisum sativum 13-day, link 1 is in layer 2, since other
+    %branches grow above it
+    %this causes issues in the problem identification & solution code
+    %can it be solved just by extending link 1 to at/above maxZ?
+    
     tic
     for j=1:plant.nDomLayers
         [plant.prob(j),plant.sol(j)]=layerProbSol(j,collarCond,...
             plant.lyrArch,plant.params,plant.parents,plant.inLayer);
     end
     plant.time=toc;
-    
     
   
     

@@ -54,11 +54,15 @@ function hookEq=formHookEq(eqIn,hanger,top,prob,Kx,b2,c1,c2,c5,parents,inLayer)
         elseif nDtrs==2
             iDtrs=find(dtrs);
             sib=setdiff(iDtrs,hookEq.iLink);
-            j=distalTipSrch(sib,parents);
-            nTerms=size(j,1);
-            [closeEqs,iLinkClose]=numCloseTerms(j,b2(j),c1(j),c2(j),inLayer(j),nTerms);
-            [closeEqs,iLinkClose,targTrack]=numCloseToSeg(parents(sib),closeEqs,iLinkClose,prob,Kx,b2,c1,c2,c5,parents,inLayer);
-            
+            if any(parents==sib)
+                j=distalTipSrch(sib,parents);
+                nTerms=size(j,1);
+                [closeEqs,iLinkClose]=numCloseTerms(j,b2(j),c1(j),c2(j),inLayer(j),nTerms);
+                [closeEqs,iLinkClose,targTrack]=numCloseToSeg(parents(sib),closeEqs,iLinkClose,prob,Kx,b2,c1,c2,c5,parents,inLayer);
+            else
+                j=sib;
+                [closeEqs,iLinkClose]=numCloseTerms(j,b2(j),c1(j),c2(j),inLayer(j),1);
+            end
             massCons=formLinkEq(par,sprintf('G1%d',hookEq.iLink),...
                 {sprintf('G0%d',par) sprintf('G1%d',sib)},...
                 [Kx(par)/Kx(hookEq.iLink) Kx(sib)/Kx(hookEq.iLink)]);

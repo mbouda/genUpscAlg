@@ -19,6 +19,7 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
     
     posStart=vtPlant.cz(:,2)>0;
     posEnd=sum(vtPlant.cz,2)>0;
+    
     anyPos=posStart | posEnd;
     
     if any(anyPos)   %if any segments stick out of the ground
@@ -27,6 +28,13 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
         zLims=(maxZ:dz:zMin)'; %add maximum Z vertex to the layer limits
         vtPlant.kr(anyPos)=0; %set kr any protruding segments to 0
     end            
+    
+    if vtPlant.cz(1,2)<maxZ
+        topEnd=sum(vtPlant.cz(1,:));
+        vtPlant.cz(1,2)=maxZ;
+        vtPlant.cz(1,1)=topEnd-maxZ;
+        warning('Adjusting root collar to top of system','adjCol')
+    end
     
     vtPlant.kr=repmat(kr,[vtPlant.nL 1]);
     vtPlant.kx=repmat(kx,[vtPlant.nL 1]);

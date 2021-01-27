@@ -113,7 +113,7 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
             upInts=cat(2,upInts,downInts(downExtra));
             downInts=downInts(~downExtra);
             sib=setdiff(cat(1,extraEqs(j).helperEqs(:).iLink),extraEqs(j).iLink);
-            if ~ismember(sib,downInts)
+            if ~ismember(sib,downInts) 
                 downInts=cat(2,downInts,sib);
             end
 %         elseif nLegsTarg==2

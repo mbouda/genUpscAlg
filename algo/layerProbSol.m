@@ -46,13 +46,18 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
             keepExtra=selectExtras(layerEqs(J));
             layerEqs(J(~keepExtra))=[];
             elimLayers=startsWith(cat(1,{layerEqs(:).depvar}),'psiL');
+            %should be choosing outermost layer(s) to actually keep in the
+            %system, no?
         end
         J=sort(find(elimLayers),'descend');
         
+        %if all but one layers are almost always eliminated, should we not
+        %add equations b/w variables? and/or for the remaining layers?
         layerEqs=truncateZeroCoeffs(layerEqs,nLayers);
         jL=1:size(layerEqs,1);
         for j=J
-            %add test for duplication??
+            %add test for duplication?? seem to have eliminated it well
+            %upfront
             for k=setdiff(jL,j)
                 if ismember(layerEqs(j).depvar,layerEqs(k).vars)
                     layerEqs(k)=subsFor(layerEqs(k),layerEqs(j).depvar,...
