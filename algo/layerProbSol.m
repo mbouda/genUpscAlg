@@ -1,5 +1,5 @@
 function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLayer)
-
+keyboard
     prob=numProbDef(iLayer,lyrArch.acroLrs,lyrArch.nxtLr,lyrArch.basiLrs,lyrArch.prvLr,parents,inLayer);
     
     nLayers=size(prob.kLayers,1);
@@ -32,6 +32,8 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
         end
         layerEqs(isHook)=[];
     end
+    mLayers=size(layerEqs,1);
+    
     %can also pre-eliminate kLayer==0 cases?
     
     
@@ -49,11 +51,10 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
             %should be choosing outermost layer(s) to actually keep in the
             %system, no?
         end
+        mLayers=size(layerEqs,1);
         J=sort(find(elimLayers),'descend');
         
-        %if all but one layers are almost always eliminated, should we not
-        %add equations b/w variables? and/or for the remaining layers?
-        layerEqs=truncateZeroCoeffs(layerEqs,nLayers);
+        layerEqs=truncateZeroCoeffs(layerEqs,mLayers);
         jL=1:size(layerEqs,1);
         for j=J
             %add test for duplication?? seem to have eliminated it well
@@ -68,12 +69,11 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
                     end
                 end
             end
-            layerEqs=truncateZeroCoeffs(layerEqs,nLayers);
+            layerEqs=truncateZeroCoeffs(layerEqs,mLayers);
             jL=setdiff(jL,j);
         end
         layerEqs(J)=[];
     end
-    
     
     sol=formSys(layerEqs,cat(1,layerEqs(:).kLayer),iLayer);
 %     eqs=linSysSolve(iLayer,layerEqs,prob,nLayers); 

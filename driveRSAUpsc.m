@@ -45,10 +45,37 @@ collarCond='psiC';
         'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp);
     plant.sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
     
-    %in Pisum sativum 13-day, j=3: hangning sector in the bottom subdomain
-    %layer,  comes from below, ultimately suspended from targ;
-    %current way of searching for how to attach it leaves targ as parent
-    %and looks for landing on sibling, failing to attach
+    %in Pisum sativum 13-day, j=5: fails significantly on residuals
+    %if there is a bug, it appears to be in compLayerEqs, before line 178
+    
+    %target link (25)  is very short, but lengthening it by brute force
+    %does not right the errors
+    
+    %the residuals are also not due to brute number of links in subdomain
+        %layer 5 has same number of links in solution subdomain as layers
+        %2-4; layers 6-7 have more and layer 8 has even more. 
+        
+    %does not seem to be due to differences in magnitude of the coeffs or
+    %their number (i.e. reduction of system)
+        
+    %so it must be due to activation of different code. 
+        %some subset of code:
+            %(a) contains a bug, or 
+            %(b) is especially prone to propagating num. error
+    %how can we track differential code activations?
+    
+    %seems that downward substitution increases the residuals; layers lower
+    %down in identical subdomains have more error
+        %in layer 5 affects coeff for psi125 in eqs for psiX4 or psiX5 (or both)
+        
+    %may be due to extra layerEqs chosen with huge and/or
+    %tiny coefs, which make many coefs <1e-16 upon substitution,
+    %which then gets them truncated
+    
+    %actually: truncateCoeffs eliminates coeffs 1e-16 times smaller than
+    %largest coef across all equations...
+    %as soon as there is a crazy equation with giant coef, it all goes
+    %batshit.
     
     tic
     for j=1:plant.nDomLayers
@@ -56,7 +83,6 @@ collarCond='psiC';
             plant.lyrArch,plant.params,plant.parents,plant.inLayer);
     end
     plant.time=toc;
-    
   
     
     plant.params.b=plant.b;

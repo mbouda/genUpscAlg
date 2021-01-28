@@ -43,7 +43,7 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
     plant=forceTriJuncs(slPlant); 
     
     plant.b=repmat(b,[plant.nL 1]);
-
+    
     plant.params=formPlantParams(plant);
 
 end
