@@ -69,8 +69,8 @@ function [layerEqs,prob,nLayers]=numSubsIntDn(iSeg,prob,closeEqs,iLinkClose,extr
             end
         else
             iExEq=ismember(iLinkExtra,iSibs);
-            nTargLegs=size(extraEqs(iExEq).targTrack,1);
-            if nTargLegs==2 && iLinkExtra(iExEq)==iSeg
+            %nTargLegs=size(extraEqs(iExEq).targTrack,1);
+            if iLinkExtra(iExEq)==iSeg
                 
                 extraEq=numIsolate(extraEqs(iExEq),sprintf('G1%d',sib));
                 extraEq.iLink=sib;

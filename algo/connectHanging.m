@@ -46,9 +46,17 @@ function hookEqs=connectHanging(hangLinks,closeEqs,iLinkClose,prob,parents,b2,c1
             iClEq=(iLinkClose==hangLinks(i));
             hookEqs(i)=formHookEq(closeEqs(iClEq),hangLinks(i),dtrs(i),prob,Kx,b2,c1,c2,c5,parents,inLayer);
             
-            hookEqs(i).vars{ismember(hookEqs(i).vars,sprintf('psi1%d',dtrs(i)))}=sprintf(sprintf('psi1%d',sib));
-            hookEqs(i).iLink=sib;
-            hookEqs(i)=attachHookEq(hookEqs(i),hits(i),prob,Kx,b2,c1,c2,c5,parents,inLayer);
+            if ismember(par,prob.targ)
+                 hookEqs(i).vars{ismember(hookEqs(i).vars,sprintf('psi1%d',dtrs(i)))}=sprintf(sprintf('psi0%d',par));
+                 hookEqs(i).iLink=par;
+                 hookEqs(i)=numPassUpPsi(hookEqs(i),par,inLayer(par),c1(par),c2(par),c5(par)); 
+                 %not sure if this hook can be well resolved by existing
+                 %code
+            else
+                hookEqs(i).vars{ismember(hookEqs(i).vars,sprintf('psi1%d',dtrs(i)))}=sprintf(sprintf('psi1%d',sib));
+                hookEqs(i).iLink=sib;
+                hookEqs(i)=attachHookEq(hookEqs(i),hits(i),prob,Kx,b2,c1,c2,c5,parents,inLayer);
+            end
         end
         
         hookEqs=rmfield(hookEqs,'iLink');

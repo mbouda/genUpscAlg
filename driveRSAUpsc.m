@@ -45,10 +45,10 @@ collarCond='psiC';
         'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp);
     plant.sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
     
-    %looks like in Pisum sativum 13-day, link 1 is in layer 2, since other
-    %branches grow above it
-    %this causes issues in the problem identification & solution code
-    %can it be solved just by extending link 1 to at/above maxZ?
+    %in Pisum sativum 13-day, j=3: hangning sector in the bottom subdomain
+    %layer,  comes from below, ultimately suspended from targ;
+    %current way of searching for how to attach it leaves targ as parent
+    %and looks for landing on sibling, failing to attach
     
     tic
     for j=1:plant.nDomLayers
