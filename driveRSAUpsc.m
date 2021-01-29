@@ -77,7 +77,7 @@ collarCond='psiC';
     %also has one more var/coef for each layer up.
     
     tic
-    for j=3:4 %1:plant.nDomLayers
+    for j=1:plant.nDomLayers
         [plant.prob(j),plant.sol(j)]=layerProbSol(j,collarCond,...
             plant.lyrArch,plant.params,plant.parents,plant.inLayer);
     end

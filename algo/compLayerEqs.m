@@ -70,6 +70,9 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
            
     %identify hanging elements
     allTops=union(prob.tops,topTerms);
+    if size(allTops,2)>1
+        allTops=allTops';
+    end
     hangLinks=identifyHanging(allTops,prob,parents);
     if any(hangLinks)
             hangClosed=ismember(hangLinks,iLinkClose);
@@ -158,6 +161,7 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
     
     %HERE add hookEqs to layerEqs
     layerEqs=cat(1,layerEqs,hookEqs);
+    nLayers=size(layerEqs,1);
     
     for j=prob.targ'
         if ismember(j,prob.tops)

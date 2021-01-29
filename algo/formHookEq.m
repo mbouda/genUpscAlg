@@ -83,13 +83,21 @@ function hookEq=formHookEq(eqIn,hanger,top,prob,Kx,b2,c1,c2,c5,parents,inLayer)
         
     end
     
-    j=distalTipSrch(top,parents);
-            
-    nTerms=size(j,1);
-    [closeEqs,iLinkClose]=numCloseTerms(j,b2(j),c1(j),c2(j),inLayer(j),nTerms);
-    [closeEqs,iLinkClose,targTrack]=numCloseToSeg(parents(top),closeEqs,iLinkClose,prob,Kx,b2,c1,c2,c5,parents,inLayer);
-    
-    hookEq=subsFor(hookEq,closeEqs.depvar,closeEqs.vars,closeEqs.coefs);
-    hookEq=sumVars(hookEq);
+    if any(parents==top)
+        j=distalTipSrch(top,parents);
+
+        nTerms=size(j,1);
+        [closeEqs,iLinkClose]=numCloseTerms(j,b2(j),c1(j),c2(j),inLayer(j),nTerms);
+        [closeEqs,iLinkClose,targTrack]=numCloseToSeg(parents(top),closeEqs,iLinkClose,prob,Kx,b2,c1,c2,c5,parents,inLayer);
+
+        hookEq=subsFor(hookEq,closeEqs.depvar,closeEqs.vars,closeEqs.coefs);
+        hookEq=sumVars(hookEq);
+    else
+        j=top;
+        [closeEqs,iLinkClose]=numCloseTerms(j,b2(j),c1(j),c2(j),inLayer(j),1);
+        hookEq=subsFor(hookEq,closeEqs.depvar,closeEqs.vars,closeEqs.coefs);
+        hookEq=sumVars(hookEq);
+        hookEq=truncateZeroCoeffs(hookEq,1);
+    end
     
 end

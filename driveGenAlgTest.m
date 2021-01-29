@@ -25,7 +25,14 @@ nSimpleSys=size(testSet,2);
 nTestSys=size(testSet,2);
 collarCond='psiC'; 
 
-for i=14:17 %nTestSys
+%currently i=16, j=6 ends up with unsolvable system: top equation is only
+%one with a var in the target Eq, but adds extra var with zero coefs
+%everywhere else; others appear to be in same position 
+
+%13-day P. sativum has improved overall, but still has increased residuals
+%in other layers now
+
+for i=1:nTestSys
     testSet(i).nDomLayers=max(testSet(i).inLayer);
     if i<=nSimpleSys
         testSet(i).params=testingSetRandParams(testSet(i).parents);  
