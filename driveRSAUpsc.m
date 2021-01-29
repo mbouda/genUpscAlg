@@ -46,7 +46,6 @@ collarCond='psiC';
     plant.sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
     
     %in Pisum sativum 13-day, j=5: fails significantly on residuals
-    %if there is a bug, it appears to be in compLayerEqs, before line 178
     
     %target link (25)  is very short, but lengthening it by brute force
     %does not right the errors
@@ -55,10 +54,10 @@ collarCond='psiC';
         %layer 5 has same number of links in solution subdomain as layers
         %2-4; layers 6-7 have more and layer 8 has even more. 
         
-    %does not seem to be due to differences in magnitude of the coeffs or
-    %their number (i.e. reduction of system)
+    %is it due to differences in magnitude of the coeffs? 
+    %or of their components on the way?
         
-    %so it must be due to activation of different code. 
+    %is it due to activation of different code. 
         %some subset of code:
             %(a) contains a bug, or 
             %(b) is especially prone to propagating num. error
@@ -66,19 +65,19 @@ collarCond='psiC';
     
     %seems that downward substitution increases the residuals; layers lower
     %down in identical subdomains have more error
-        %in layer 5 affects coeff for psi125 in eqs for psiX4 or psiX5 (or both)
+        %this pattern no longer holds very smoothly; it's more a case of
+        %single layers... (?)
         
     %may be due to extra layerEqs chosen with huge and/or
-    %tiny coefs, which make many coefs <1e-16 upon substitution,
-    %which then gets them truncated
+    %tiny coefs, 
     
-    %actually: truncateCoeffs eliminates coeffs 1e-16 times smaller than
-    %largest coef across all equations...
-    %as soon as there is a crazy equation with giant coef, it all goes
-    %batshit.
+    %comparing solutions for j=5 from j=3:5, they progressively have fewer
+    %vars/coefs, also decreasing accuracy...
+    %solving them for psiXBar5, better fit from j=4, matches from j=3
+    %also has one more var/coef for each layer up.
     
     tic
-    for j=1:plant.nDomLayers
+    for j=3:4 %1:plant.nDomLayers
         [plant.prob(j),plant.sol(j)]=layerProbSol(j,collarCond,...
             plant.lyrArch,plant.params,plant.parents,plant.inLayer);
     end

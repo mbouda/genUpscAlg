@@ -1,5 +1,5 @@
 function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLayer)
-keyboard
+
     prob=numProbDef(iLayer,lyrArch.acroLrs,lyrArch.nxtLr,lyrArch.basiLrs,lyrArch.prvLr,parents,inLayer);
     
     nLayers=size(prob.kLayers,1);
@@ -45,7 +45,8 @@ keyboard
             kLayer=find(cat(1,layerEqs(:).kLayer)==iLayer);
             J=cat(2,sort(eL(eL>kLayer),'descend'),eL(eL<kLayer));
             %elminiate redundants upfront:
-            keepExtra=selectExtras(layerEqs(J));
+            %keepExtra=selectExtras(layerEqs(J));
+            keepExtra=selectOneExtra(layerEqs(J));
             layerEqs(J(~keepExtra))=[];
             elimLayers=startsWith(cat(1,{layerEqs(:).depvar}),'psiL');
             %should be choosing outermost layer(s) to actually keep in the

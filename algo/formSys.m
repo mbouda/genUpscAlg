@@ -82,7 +82,6 @@ function sol=formSys(eqs,fullSet,iEq)
         varOrd(cutVar)=[];
         N=N-sum(cutVar);
         
-        
         nT=size(cM,1);
         nRem=nT-1;
         pres=cM(1:nRem,1:nRem)~=0;
