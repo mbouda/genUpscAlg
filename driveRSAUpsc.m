@@ -21,7 +21,7 @@ resTol=1e-12; %relative tolerance on numerical residuals;
 %% File input, preprocessing
 dataDir='./testing/crbTestSet/';
 
-nDay=13; 
+nDay=16; 
 rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 
 %rsaFile='RLab_210115_workshop.vtp';
@@ -44,38 +44,7 @@ collarCond='psiC';
     plant.prob=struct('iLinks',fldPrp,'kLayers',fldPrp,'terms',fldPrp,...
         'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp);
     plant.sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
-    
-    %in Pisum sativum 13-day, j=5: fails significantly on residuals
-    
-    %target link (25)  is very short, but lengthening it by brute force
-    %does not right the errors
-    
-    %the residuals are also not due to brute number of links in subdomain
-        %layer 5 has same number of links in solution subdomain as layers
-        %2-4; layers 6-7 have more and layer 8 has even more. 
-        
-    %is it due to differences in magnitude of the coeffs? 
-    %or of their components on the way?
-        
-    %is it due to activation of different code. 
-        %some subset of code:
-            %(a) contains a bug, or 
-            %(b) is especially prone to propagating num. error
-    %how can we track differential code activations?
-    
-    %seems that downward substitution increases the residuals; layers lower
-    %down in identical subdomains have more error
-        %this pattern no longer holds very smoothly; it's more a case of
-        %single layers... (?)
-        
-    %may be due to extra layerEqs chosen with huge and/or
-    %tiny coefs, 
-    
-    %comparing solutions for j=5 from j=3:5, they progressively have fewer
-    %vars/coefs, also decreasing accuracy...
-    %solving them for psiXBar5, better fit from j=4, matches from j=3
-    %also has one more var/coef for each layer up.
-    
+       
     tic
     for j=1:plant.nDomLayers
         [plant.prob(j),plant.sol(j)]=layerProbSol(j,collarCond,...

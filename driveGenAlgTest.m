@@ -25,12 +25,13 @@ nSimpleSys=size(testSet,2);
 nTestSys=size(testSet,2);
 collarCond='psiC'; 
 
-%currently i=16, j=6 ends up with unsolvable system: top equation is only
-%one with a var in the target Eq, but adds extra var with zero coefs
-%everywhere else; others appear to be in same position 
+%currently i=17, j=4 has unacceptably high residual. Unclear why.
+%other max residuals (i=19, 23; 13-day P. sativum) are cca 1e-9, 1e-11, elevated but perhaps acceptable;
+%may be improved by pivoting in final system reduction (?)
 
-%13-day P. sativum has improved overall, but still has increased residuals
-%in other layers now
+%Currently choose just one extra layerEq to use;
+    %but don't have a good rule for it... may need to update
+
 
 for i=1:nTestSys
     testSet(i).nDomLayers=max(testSet(i).inLayer);
@@ -80,7 +81,7 @@ else
     fprintf(1,'Failed residual test in case %d\n',find(~result));
 end
 
-maxRes=cat(1,testSet(17).check(:).maxRes);
+maxRes=cat(1,testSet(23).check(:).maxRes);
 
 %looks like currently some residuals grow out of hand in the crb cases
     %appears to be due to random assignment of parameters -- with params

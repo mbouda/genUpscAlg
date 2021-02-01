@@ -38,7 +38,7 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
 
     [closeEqs,layerEqs,termed,iLinkClose]=numCloseInts(prob,closeEqs,iLinkClose,layerEqs,nLayers,Kx,b2,c1,c2,c5,...
                                      parents,inLayer,termed,iLayer);
-    
+       
     oJuncPars=getOpenJuncs(prob.iLinks,parents,termed);
     if any(oJuncPars)
         nOJ=size(oJuncPars,1);
@@ -102,7 +102,7 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
     
     %downInts=intersect(prob.ints(inLayer(prob.ints)<iLayer),prob.iLinks(~termed))';
     %upInts=flipud(intersect(prob.ints(inLayer(prob.ints)>=iLayer),prob.iLinks(~termed)))';
-    
+ 
     for j=1:nOJ
         nLegsTarg=numel(extraEqs(j).targTrack);
         if nLegsTarg==1

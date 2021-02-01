@@ -13,11 +13,11 @@ function [extraEq,iLinkEx]=compExtraEq(iLink,prob,b2,c1,c2,c5,Kx,inLayer,parents
         closeEqs(i).vars{strcmp(closeEqs(i).vars,sprintf('psi1%d',iLinkClose(i)))}=sprintf('psi0%d',iLink);
     end
     
-    
     hasTargs=cellfun(@(x)any(x),{targTrack(:).list})';
     
-    for i=find(hasTargs)'
-        [hasTargs(i),~]=srchTarg(iLinkClose(i),parents,targTrack(i).list,prob.bots);
+    for i=find(hasTargs)' 
+        %[hasTargs(i),~]=srchTarg(iLinkClose(i),parents,targTrack(i).list,prob.bots);
+       [hasTargs(i),~]=srchTarg(targTrack(i).head,parents,targTrack(i).list,prob.bots);
         if ~hasTargs(i)
             targTrack(i).list=[];
         end
