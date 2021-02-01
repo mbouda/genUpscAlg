@@ -41,7 +41,7 @@ testSet(n+1).params=plant.params;
 n=size(testSet,2);
 dataDir='./testing/crbTestSet/';
 
-nDay=7:3:10;
+nDay=7:3:16;
 for i=1:size(nDay,2)
     rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay(i));
     [plant,zMin,zLims,dz]=importPlant(strcat(dataDir,rsaFile),nLayInit,kr,kx,b); 
