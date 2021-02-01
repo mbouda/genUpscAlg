@@ -28,7 +28,7 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
         zLims=(maxZ:dz:zMin)'; %add maximum Z vertex to the layer limits
         vtPlant.kr(anyPos)=0; %set kr any protruding segments to 0
     else
-        maxZ=max(vtPlant.cz(:,2));
+        maxZ=max(max(vtPlant.cz(:,2),max(sum(vtPlant.cz,2))));
     end            
     
     if vtPlant.cz(1,2)<maxZ

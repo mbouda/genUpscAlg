@@ -25,15 +25,15 @@ nSimpleSys=size(testSet,2);
 nTestSys=size(testSet,2);
 collarCond='psiC'; 
 
-%currently i=17, j=4 has unacceptably high residual. Unclear why.
-%other max residuals (i=19, 23; 13-day P. sativum) are cca 1e-9, 1e-11, elevated but perhaps acceptable;
+% max residuals (i=19, 23; 13-day P. sativum) are cca 1e-9, 1e-11, elevated but perhaps acceptable;
 %may be improved by pivoting in final system reduction (?)
 
 %Currently choose just one extra layerEq to use;
     %but don't have a good rule for it... may need to update
+%have a way to add equations just before pivoting, but again, may need improvement.
 
 
-for i=1:nTestSys
+for i=1:18
     testSet(i).nDomLayers=max(testSet(i).inLayer);
     if i<=nSimpleSys
         testSet(i).params=testingSetRandParams(testSet(i).parents);  
