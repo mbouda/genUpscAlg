@@ -76,7 +76,7 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
         layerEqs(J)=[];
     end
     
-    sol=formSys(layerEqs,cat(1,layerEqs(:).kLayer),iLayer);
+    sol=formSys(layerEqs,cat(1,layerEqs(:).kLayer),iLayer,prob,parents,params,inLayer);
 %     eqs=linSysSolve(iLayer,layerEqs,prob,nLayers); 
 %     sol=eqs(prob.kLayers==iLayer);
 

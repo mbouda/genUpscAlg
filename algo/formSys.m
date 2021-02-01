@@ -1,4 +1,4 @@
-function sol=formSys(eqs,fullSet,iEq)
+function sol=formSys(eqs,fullSet,iEq,prob,parents,params,inLayer)
 
     notZero=fullSet~=0;
     for i=find(notZero)'
@@ -80,13 +80,22 @@ function sol=formSys(eqs,fullSet,iEq)
         
         [cM,cutVar]=selectEqs(cM,isNot,nT);
         varOrd(cutVar)=[];
+        isNot(cutVar)=[];
         N=N-sum(cutVar);
         
         nT=size(cM,1);
         nRem=nT-1;
         pres=cM(1:nRem,1:nRem)~=0;
         
-        %[cM,pres,nRem,nT]=addRows();
+        if rcond(cM(1:nRem,1:nRem))<=eps(1)
+            warning('Reduction matrix is singular','cMSing');
+            [cM,pres,varOrd,nRem,nT]=addRows(pres,cM,varOrd,isNot,nRem,nT,...
+                prob,parents,params.b2,params.c1,...
+                params.c2,params.c5,params.Kx,inLayer);
+            N=size(cM,2);
+        end
+        
+        
         
         [i,j]=find(pres);
         for k=1:nRem
