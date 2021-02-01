@@ -25,15 +25,23 @@ nSimpleSys=size(testSet,2);
 nTestSys=size(testSet,2);
 collarCond='psiC'; 
 
-% max residuals (i=19, 23; 13-day P. sativum) are cca 1e-9, 1e-11, elevated but perhaps acceptable;
+% max residuals elevated but perhaps acceptable; 
 %may be improved by pivoting in final system reduction (?)
+% i=19, j=4 cca 4e-12 (likely not random, though)
+% i=23, j=4 cca 4e-9
+% i=27, j=2 cca 2e-10 (13-day P. sativum) 
 
 %Currently choose just one extra layerEq to use;
     %but don't have a good rule for it... may need to update
 %have a way to add equations just before pivoting, but again, may need improvement.
 
+%present last test system (Pisum sativum, 16-day old) is not practical for tests:
+%takes way too long and does not appear to add any issues
 
-for i=1:18
+%should perhaps upgrade use of parallelism in testing, for more elaborate
+%cases (thousands of network segments)
+
+for i=1:nTestSsys-1
     testSet(i).nDomLayers=max(testSet(i).inLayer);
     if i<=nSimpleSys
         testSet(i).params=testingSetRandParams(testSet(i).parents);  
