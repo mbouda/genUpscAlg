@@ -1,12 +1,15 @@
 function eqOut=sumVars(eqIn)
 
     % How to do this as efficiently as possible?
+        %reorganise the flow here?
+        %or try predict and use the checks more sparingly?
+            %as in track what will become duplicated and only sum that
     eqOut=eqIn;
     
     uqVars=unique(eqOut.vars);
     nVars=size(uqVars,2);
     for i=1:nVars
-        iVar=strcmp(eqOut.vars,uqVars{i});
+        iVar=strcmp(eqOut.vars,uqVars{i});  %make efficient version of this..
         if sum(iVar)>1
             eqOut.coefs=cat(2,eqOut.coefs(~iVar),sum(eqOut.coefs(iVar)));
             eqOut.vars=cat(2,eqOut.vars(~iVar),uqVars{i});

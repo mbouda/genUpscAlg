@@ -81,16 +81,38 @@ function layerEqs=compClrLyrEqs(iLayer,collarCond,layerEqs,prob,b2,c1,c2,c5,Kx,i
     end
                                  
     % ints in order...
-    downInts=intersect(prob.ints(inLayer(prob.ints)<iLayer),prob.iLinks(~termed))';
-    upInts=flipud(intersect(prob.ints(inLayer(prob.ints)>=iLayer),prob.iLinks(~termed)))';
+%     downInts=intersect(prob.ints(inLayer(prob.ints)<iLayer),prob.iLinks(~termed))';
+%     upInts=flipud(intersect(prob.ints(inLayer(prob.ints)>=iLayer),prob.iLinks(~termed)))';
 
+    allTops=union(prob.tops,topTerms);
+    if size(allTops,2)>1
+        allTops=allTops';
+    end
+    downLinks=idDownLinks(prob.targ,allTops',parents);
+    downInts=intersect(downLinks,prob.ints)';
+    upInts=setdiff(setdiff(prob.ints,downInts),prob.iLinks(termed))';
+    
     for j=1:nOJ
         nLegsTarg=numel(extraEqs(j).targTrack);
         if nLegsTarg==1
+%             downExtra=ismember(downInts,iLinkExtra(j));
+%             downExtra=runDownExtras(iLinkExtra(j),downExtra,downInts,parents);
+%             upInts=cat(2,upInts,downInts(downExtra));
+%             downInts=downInts(~downExtra);
+            
             downExtra=ismember(downInts,iLinkExtra(j));
             downExtra=runDownExtras(iLinkExtra(j),downExtra,downInts,parents);
+            topExtra=ismember(prob.tops,iLinkExtra(j));
+            downExtra=runDownExtras(iLinkExtra(j),downExtra,downInts,parents);
+            if any(topExtra)
+                upInts=cat(2,upInts,prob.tops(topExtra));
+            end
             upInts=cat(2,upInts,downInts(downExtra));
             downInts=downInts(~downExtra);
+            sib=setdiff(cat(1,extraEqs(j).helperEqs(:).iLink),extraEqs(j).iLink);
+            if ~ismember(sib,downInts) 
+                downInts=cat(2,downInts,sib);
+            end
             
             %need to implement here the code from compLayerEqs?
                 %(1) should make the definitive version a funciton and use
@@ -106,8 +128,14 @@ function layerEqs=compClrLyrEqs(iLayer,collarCond,layerEqs,prob,b2,c1,c2,c5,Kx,i
             %this option appears not no need any special code...
         end %if ==0, no need to execute anything
     end
+    downInts=cat(2,downInts,topTermSibs);
     
-    %nOrigLayer=nLayers; %if never use, remove eventually
+    upInts=sort(upInts,'descend');
+    downInts=sort(downInts,'ascend');
+
+    if size(upInts,1)~=1 %for some reason, needed now...
+        upInts=upInts';
+    end
     
     for j=upInts
         [layerEqs,prob,nLayers]=numSubsIntUp(j,prob,closeEqs,iLinkClose,extraEqs,iLinkExtra,...

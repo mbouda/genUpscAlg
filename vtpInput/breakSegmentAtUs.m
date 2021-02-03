@@ -11,7 +11,12 @@ function newPlant=breakSegmentAtUs(nuBrk,iL,plant,badPar)
     u=cat(1,0,nuBrk,1);
     pcs=size(u,1)-1;
     
-    newPar=plant.parents(iL)+(0:pcs-1)';
+    if iL==plant.parents(iL)+1
+        newPar=plant.parents(iL)+(0:pcs-1)';
+    else
+        newPar=cat(1,plant.parents(iL),iL+(0:pcs-2)');
+    end
+    
     [cxNew,cyNew,czNew,l]=newCoefL(plant,u,pcs,iL);
     
     %now, need to inject new values into arrays instead of single old

@@ -3,6 +3,10 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
     vtpRoot=readRootVTP(fileName);
     vtPlant=formPlantFromVTP(vtpRoot);
     
+    if any(vtPlant.L==0)
+        warning('Zero length segment','L0')
+        vtPlant=removeZeroLength(vtPlant);
+    end
     
     vtPlant.cz(:,end)=vtPlant.cz(:,end)-max(vtPlant.cz(:,end));
     %normalise root collar to 0 elevation, always

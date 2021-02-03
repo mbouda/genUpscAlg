@@ -21,10 +21,12 @@ resTol=1e-12; %relative tolerance on numerical residuals;
 %% File input, preprocessing
 dataDir='./testing/crbTestSet/';
 
-nDay=16; 
-rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
+nDay=9; %triticum: [6:3:15]
 
+%rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 %rsaFile='RLab_210115_workshop.vtp';
+rsaFile=sprintf('RLab_210203_Triticum_aestivum_a_Bingham_2011_%ddenni_simulace.vtp',nDay);
+
 
 kx=5e-5;
 kr=1.5e-10;
@@ -44,7 +46,10 @@ collarCond='psiC';
     plant.prob=struct('iLinks',fldPrp,'kLayers',fldPrp,'terms',fldPrp,...
         'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp);
     plant.sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
-       
+    
+    % in wheat, layers j=produces empty equation ...  that's a new one!
+        %
+        
     tic
     for j=1:plant.nDomLayers
         [plant.prob(j),plant.sol(j)]=layerProbSol(j,collarCond,...
@@ -89,4 +94,4 @@ times=cat(1,plant.time); %times of upscaling, not solution; those are trivial.
 
 % Should probably come out in some recognisable form, e.g. C matrix from Jan's
 % approach... in this case, should look how that was constructed for
-% simple upscaled model in the case presented at LLN
+% simple upscaled mod::el in the case presented at LLN

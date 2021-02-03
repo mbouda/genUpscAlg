@@ -26,7 +26,7 @@ function newPlant=forceTriJuncs(plant)
             iL=badPar(i);
             newU=fliplr((1-0.01*(1:nNew)))';  %here, assumption that nNew<<100...
         end
-        addPlant=breakSegmentAtUs(newU,iL,newPlant,badPar(i));  %in here, currently adds 2 too many dtrs to 1
+        addPlant=breakSegmentAtUs(newU,iL,newPlant,badPar(i));  
         
         oldDtrs=find(plant.parents==badPar(i))+nNew;
         dtrs=find(addPlant.parents==badPar(i));

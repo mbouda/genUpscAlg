@@ -23,7 +23,7 @@ function [closeEqs,iLinkClose,targTrack]=numCloseToSeg(toSeg,closeEqs,iLinkClose
                 iLinkClose(clEqI)=i;
                           
                 closeEqs(clEqI)=numCloseUp(closeEqs(clEqI),i,inLayer(i),c1(i),c2(i),c5(i),b2(i));
-           
+
             elseif sum(dtrs)==2
                 %make the bottom flux equation
                 massCons=formLinkEq(i,sprintf('G0%d',i),...
@@ -42,6 +42,7 @@ function [closeEqs,iLinkClose,targTrack]=numCloseToSeg(toSeg,closeEqs,iLinkClose
                 
                 closeEqs(iLinkClose==J(2))=[];
                 iLinkClose(iLinkClose==J(2))=[];
+                                
             else
                 keyboard
                 %here deal with supernumerary juncitons...

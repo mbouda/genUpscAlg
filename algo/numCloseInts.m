@@ -10,7 +10,7 @@ function [closeEqs,layerEqs,termed,iLinkClose]=numCloseInts(prob,closeEqs,iLinkC
     while any(pars)
   
         i=pars(end);
-        
+
             dtrs=(parents==i);
             if sum(dtrs)==1
                 iDtr=find(dtrs);
@@ -22,9 +22,9 @@ function [closeEqs,layerEqs,termed,iLinkClose]=numCloseInts(prob,closeEqs,iLinkC
                 closeEqs(clEqI).depvar=sprintf('G0%d',i);
                 closeEqs(clEqI).iLink=i;
                 iLinkClose(clEqI)=i;
-                          
+
                 closeEqs(clEqI)=numCloseUp(closeEqs(clEqI),i,inLayer(i),c1(i),c2(i),c5(i),b2(i));
-           
+
                 for j=1:nLayers 
                     if ismember(sprintf('G1%d',iDtr),layerEqs(j).vars)
                         layerEqs(j)=subsFor(layerEqs(j),sprintf('G1%d',iDtr),...
@@ -33,19 +33,19 @@ function [closeEqs,layerEqs,termed,iLinkClose]=numCloseInts(prob,closeEqs,iLinkC
                         layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',iDtr))}=sprintf('psi0%d',i);
                         layerEqs(j)=sumVars(layerEqs(j));
                         layerEqs(j)=numPassUp(layerEqs(j),i,inLayer(i),b2(i),c1(i),c2(i),c5(i));
-                        
+
 %                     elseif ismember(sprintf('psi1%d',iDtr),layerEqs(j).vars)
 %                         layerEqs(j).vars{strcmp(layerEqs(j).vars,sprintf('psi1%d',iDtr))}=sprintf('psi0%d',i);
 %                         layerEqs(j)=numPassUp(layerEqs(j),i,inLayer(i),b2(i),c1(i),c2(i),c5(i));
                     end
                 end
-
                 %placed test here in case the par is actually top, not
                 %int... otherwise, unlikely to be needed...
                 iLayer=prob.kLayers==inLayer(i);
                 if  ismember(sprintf('psiX%d',i),layerEqs(iLayer).vars)
                     layerEqs(iLayer)=subsIntoAvg(layerEqs(iLayer),i,inLayer(i),c1(i),c2(i));
-                end
+                end                    
+
             elseif sum(dtrs)==2
 
                 J=find(dtrs)';

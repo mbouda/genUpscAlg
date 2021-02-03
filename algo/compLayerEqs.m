@@ -99,7 +99,6 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
     downInts=intersect(downLinks,prob.ints)';
     upInts=setdiff(setdiff(prob.ints,downInts),prob.iLinks(termed))';
     
-    
     %downInts=intersect(prob.ints(inLayer(prob.ints)<iLayer),prob.iLinks(~termed))';
     %upInts=flipud(intersect(prob.ints(inLayer(prob.ints)>=iLayer),prob.iLinks(~termed)))';
  

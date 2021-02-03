@@ -30,7 +30,28 @@ function [layerEqs,prob,nLayers]=addLayerEq(extraEq,layerEqs,prob,nLayers,massCo
                     extraEq.helperEqs(isSib).vars,extraEq.helperEqs(isSib).coefs);  
                 newEq=sumVars(newEq);
                 if ismember(newEq.depvar,newEq.vars)
-                    newEq=numIsolDep(newEq);
+                    if newEq.coefs(ismember(newEq.vars,newEq.depvar))==1
+                        
+                        %in this case, do not use the extraEq here, as it
+                        %will return NaNs upun numIsolDep
+                        
+                        %or, try: eliminating the depvar from vars, make depvar 0
+                        newEq.vars(ismember(newEq.vars,newEq.depvar))=[];
+                        newEq.coefs(ismember(newEq.vars,newEq.depvar))=[];
+                        
+                        newEq.depvar='0';
+                        newLayer=0;
+                        
+                        %or select a different layer off the list
+                        
+                        
+                        
+                        %return
+                        
+                        
+                    else
+                        newEq=numIsolDep(newEq);
+                    end
                 end
                 newEq.vars{ismember(newEq.vars,sprintf('psi0%d',par))}=sprintf('psi1%d',iSeg);
                 newEq=sumVars(newEq);
