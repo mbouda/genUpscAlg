@@ -21,17 +21,17 @@ resTol=1e-12; %relative tolerance on numerical residuals;
 %% File input, preprocessing
 dataDir='./testing/crbTestSet/';
 
-nDay=9; %triticum: [6:3:15]
+nDay=10; %triticum: [6:3:15]
 
-%rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
+rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 %rsaFile='RLab_210115_workshop.vtp';
-rsaFile=sprintf('RLab_210203_Triticum_aestivum_a_Bingham_2011_%ddenni_simulace.vtp',nDay);
+%rsaFile=sprintf('RLab_210203_Triticum_aestivum_a_Bingham_2011_%ddenni_simulace.vtp',nDay);
 
 
 kx=5e-5;
 kr=1.5e-10;
 b=100e-6;
-nLayInit=8;
+nLayInit=7;
 
 [plant,zMin,zLims,dz]=importPlant(strcat(dataDir,rsaFile),nLayInit,kr,kx,b); 
 
@@ -47,8 +47,10 @@ collarCond='psiC';
         'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp);
     plant.sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
     
-    % in wheat, layers j=produces empty equation ...  that's a new one!
-        %
+    %pisum sativum, 10-day; if divide in nLayers =7 or 9, higher residuals
+    %in certain layers.
+        %9 layers: j=7,8 appear to be missing one or more variable
+        %7 layers: j=5 appears to be missing more than one variable
         
     tic
     for j=1:plant.nDomLayers
