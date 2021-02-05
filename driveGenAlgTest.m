@@ -41,7 +41,7 @@ collarCond='psiC';
 %should perhaps upgrade use of parallelism in testing, for more elaborate
 %cases (thousands of network segments)
 
-for i=1:nTestSsys-1
+for i=1:nTestSys-2
     testSet(i).nDomLayers=max(testSet(i).inLayer);
     if i<=nSimpleSys
         testSet(i).params=testingSetRandParams(testSet(i).parents);  
@@ -89,7 +89,7 @@ else
     fprintf(1,'Failed residual test in case %d\n',find(~result));
 end
 
-maxRes=cat(1,testSet(17).check(:).maxRes);
+maxRes=cat(1,testSet(23).check(:).maxRes);
 
 %looks like currently some residuals grow out of hand in the crb cases
     %appears to be due to random assignment of parameters -- with params

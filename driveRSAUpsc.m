@@ -31,7 +31,7 @@ rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',n
 kx=5e-5;
 kr=1.5e-10;
 b=100e-6;
-nLayInit=7;
+nLayInit=8;
 
 [plant,zMin,zLims,dz]=importPlant(strcat(dataDir,rsaFile),nLayInit,kr,kx,b); 
 
@@ -51,6 +51,11 @@ collarCond='psiC';
     %in certain layers.
         %9 layers: j=7,8 appear to be missing one or more variable
         %7 layers: j=5 appears to be missing more than one variable
+    %found one possible bug and removed, but residuals persist
+    %should make code to check for pis1/G1 on selected segments
+        %to match individual equations before system is reduced
+            %to see if there is an error in forming the equations
+            %or if the problem definition /  system reduction strategy are faulty
         
     tic
     for j=1:plant.nDomLayers

@@ -77,7 +77,7 @@ function sol=formSys(eqs,fullSet,iEq,prob,parents,params,inLayer)
                 cM(nT,j)=targEq.coefs(isVar);
             end
         end
-        
+
         [cM,cutVar]=selectEqs(cM,isNot,nT);
         varOrd(cutVar)=[];
         isNot(cutVar)=[];

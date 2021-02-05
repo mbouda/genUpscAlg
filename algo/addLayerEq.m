@@ -30,7 +30,7 @@ function [layerEqs,prob,nLayers]=addLayerEq(extraEq,layerEqs,prob,nLayers,massCo
                     extraEq.helperEqs(isSib).vars,extraEq.helperEqs(isSib).coefs);  
                 newEq=sumVars(newEq);
                 if ismember(newEq.depvar,newEq.vars)
-                    if newEq.coefs(ismember(newEq.vars,newEq.depvar))==1
+                    if abs(newEq.coefs(ismember(newEq.vars,newEq.depvar))-1)<eps
                         
                         %in this case, do not use the extraEq here, as it
                         %will return NaNs upun numIsolDep

@@ -36,6 +36,7 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
     
     %can also pre-eliminate kLayer==0 cases?
     
+    [layerEqs,mLayers]=remZeroEqs(layerEqs,mLayers);
     
     elimLayers=startsWith(cat(1,{layerEqs(:).depvar}),'psiL');
     if any(elimLayers)
