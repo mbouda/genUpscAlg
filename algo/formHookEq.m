@@ -78,7 +78,7 @@ function hookEq=formHookEq(eqIn,hanger,top,prob,Kx,b2,c1,c2,c5,parents,inLayer)
             
         else
             keyboard
-            %deal with supernumerary juncitons here
+            %deal with supernumerary junctions here
         end
         
     end

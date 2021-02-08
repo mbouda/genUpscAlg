@@ -44,6 +44,8 @@ function [extraEq,iLinkEx]=compExtraEq(iLink,prob,b2,c1,c2,c5,Kx,inLayer,parents
         extraEq=sumVars(extraEq);
         extraEq.helperEqs=closeEqs;
         iLinkEx=iLinkClose(~targHead);
-        extraEq.targTrack=targTrack(targHead);
+        extraEq.targTrack=targTrack(hasTargs);  
+%         extraEq.targTrack=targTrack(targHead);  %previous version, likely
+%         bug as it deletes info
     end
 end

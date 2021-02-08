@@ -67,7 +67,7 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
         iLinkExtra=[];
         nOJ=0;
     end
-           
+    
     %identify hanging elements
     allTops=union(prob.tops,topTerms);
     if size(allTops,2)>1

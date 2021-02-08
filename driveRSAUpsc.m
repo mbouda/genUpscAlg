@@ -47,12 +47,6 @@ collarCond='psiC';
         'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp,'eqs',fldPrp);
     plant.sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
     
-    %pisum sativum, 10-day; if divide in nLayers =7 or 9, higher residuals
-    %in certain layers.
-        %9 layers: j=8 is off
-            %are there circumstances that link this to case i=17 in genTest?
-            %try see which code gets activated in incorrect cases & not
-            %correct ones?
         
     tic
     for j=1:plant.nDomLayers

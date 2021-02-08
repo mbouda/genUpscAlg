@@ -15,7 +15,7 @@ keyboard
     psi0=zeros(testCase.nL,testSol.nBC,testSol.nC);
     psiX=zeros(testCase.nL,testSol.nBC,testSol.nC);
     Qr=zeros(testCase.nL,testSol.nBC,testSol.nC);
-    G1=zeros(testCase.nL,testSol.nBC,testSol.nC);
+    
 
     for j=1:testSol.nC
         psiC=testSol.psiBC(j);
@@ -25,14 +25,22 @@ keyboard
             psi0(:,i,j)=-invCP2*(CP3*psiS+psiC*CP1);
             psiX(:,i,j)=-invCM2*(CM3*psiS+psiC*CM1);
             Qr(:,i,j)=-KrS.*(psiX(:,i,j)-psiS);
-%             G1(:,i,j)=(psiX(:,i,j)-testCase.params.c1.*psi1(:,i,j)-(1-testCase.params.c1).*psiS)...
-%                 ./testCase.params.c2;
         end
     end
   
     psi1=zeros(testCase.nL,testSol.nBC,testSol.nC);
     psi1(1,:)=psiC;
     psi1(2:end,:)=psi0(testCase.parents(2:end),:);
+    
+    G1=zeros(testCase.nL,testSol.nBC,testSol.nC);
+    for j=1:testSol.nC
+        parfor i=1:testSol.nBC
+            psiSL=testSol.psiBCS(:,i);
+            psiS=psiSL(inLayer);
+            G1(:,i,j)=(psiX(:,i,j)-testCase.params.c1.*psi1(:,i,j)-(1-testCase.params.c1).*psiS)...
+                ./testCase.params.c2;
+        end
+    end
     
     for i=1:size(testCase.prob,1)
         
@@ -59,16 +67,26 @@ keyboard
             
             psiLj=testSol.psiBCS(jL,:)';
             psi1j=psi1(jp1,:,1)';
+            G1j=G1(jg1,:,1)';
             
             vals(:,isPsiL)=psiLj;
             vals(:,isPsi1)=psi1j;
+            vals(:,isG1)=G1j;
  
+            %for main layerEqs:
             depJ=discoverIndices({eqs(j).depvar},'psiXBar');
             depVal=testSol.psiXL(depJ,:)';
 
+            %forHookEqs:
             depJ=discoverIndices({eqs(j).depvar},'psi1');
             depVal=psi1(depJ,:,1)';
             
+            %for zeroEqs:
+            depVal=0;
+            
+            %for new extraEqs
+            depJ=discoverIndices({eqs(j).depvar},'G1');
+            depVal=G1(depJ,:,1)';
             
             predVal=sum(repmat(eqs(j).coefs,[testSol.nBC,1]).*vals,2);
             r=depVal-predVal;

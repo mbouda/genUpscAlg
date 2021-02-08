@@ -36,8 +36,9 @@ function [layerEqs,prob,nLayers]=addLayerEq(extraEq,layerEqs,prob,nLayers,massCo
                         %will return NaNs upun numIsolDep
                         
                         %or, try: eliminating the depvar from vars, make depvar 0
-                        newEq.vars(ismember(newEq.vars,newEq.depvar))=[];
                         newEq.coefs(ismember(newEq.vars,newEq.depvar))=[];
+                        newEq.vars(ismember(newEq.vars,newEq.depvar))=[];
+                        
                         
                         newEq.depvar='0';
                         newLayer=0;
