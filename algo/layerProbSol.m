@@ -16,7 +16,7 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
             params.b2,params.c1,params.c2,params.c5,params.Kx,...
             inLayer,parents,nLayers);
     end
-    
+
     %sometimes psiC gets reported twice: not summed where it should be!
     mLayers=size(layerEqs,1);
     for i=1:mLayers
@@ -76,7 +76,7 @@ function [prob,sol]=layerProbSol(iLayer,collarCond,lyrArch,params,parents,inLaye
         end
         layerEqs(J)=[];
     end
-    
+    prob.eqs=layerEqs;
     sol=formSys(layerEqs,cat(1,layerEqs(:).kLayer),iLayer,prob,parents,params,inLayer);
 %     eqs=linSysSolve(iLayer,layerEqs,prob,nLayers); 
 %     sol=eqs(prob.kLayers==iLayer);
