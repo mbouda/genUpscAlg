@@ -56,7 +56,7 @@ for i=1:nTestSys-2
     %could these three setup calls be placed outside the loop for speed?
     fldPrp=cell(testSet(i).nDomLayers,1);
     testSet(i).prob=struct('iLinks',fldPrp,'kLayers',fldPrp,'terms',fldPrp,...
-        'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp);
+        'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp,'eqs',fldPrp);
     testSet(i).sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
     
     %keyboard calls should currenly only indicate unfinished parts of code
