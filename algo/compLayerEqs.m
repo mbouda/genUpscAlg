@@ -3,7 +3,7 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
     topTerms=intersect(prob.terms,prob.tops);
     topTermSibs=[];
     if any(topTerms)
-        prob.tops(prob.tops==topTerms)=[];
+        prob.tops(ismember(prob.tops,topTerms))=[];
         for j=topTerms'
             topTermSibs=cat(2,topTermSibs,setdiff(find(parents==parents(j)),j));
         end

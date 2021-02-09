@@ -7,6 +7,10 @@ function newPlant=forceTriJuncs(plant)
         %that doing them in reverse order will prevent having to renumber
         %this array in the loop below...
     
+    if sum(plant.parents==0)>1 %this will make sure a single segment is root collar, a second is shfted down a bit
+        badPar=cat(1,badPar,0);
+    end
+        
     nBP=size(badPar,1);
     if nBP>0
         warning('Some junctions have >2 daughters, adjusting.','badpar');

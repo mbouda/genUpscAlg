@@ -1,7 +1,5 @@
 function sol=fullSol(testCase)
 
-
-
     sys.parents=testCase.parents;
     sys.inLayer=testCase.inLayer;
     sys.Kr=pi*(2*testCase.params.r-testCase.params.b).*testCase.params.kr./testCase.params.b; 
@@ -11,7 +9,7 @@ function sol=fullSol(testCase)
 
     psiBC=-0.8e6;
     PSIL=-(0.3:0.2:0.7)*1e6;
-    str=strcat('combvec(',repmat('PSIL,',[1 testCase.nDomLayers]),'PSIL)');
+    str=strcat('combvec(',repmat('PSIL,',[1 testCase.nDomLayers-1]),'PSIL)');
     psiBCS=eval(str);
     [nLayer,nBC]=size(psiBCS);
     nC=1;

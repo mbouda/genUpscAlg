@@ -45,7 +45,11 @@ function hookEq=attachHookEq(hookEq,targ,prob,Kx,b2,c1,c2,c5,parents,inLayer)
             sib=iDtrs(~lands);
             iLink=iDtrs(lands);
             
-            j=distalTipSrch(sib,parents);
+            if any(parents==sib)
+                j=distalTipSrch(sib,parents);
+            else
+                j=sib;
+            end
             nTerms=size(j,1);
             [closeEqs,iLinkClose]=numCloseTerms(j,b2(j),c1(j),c2(j),inLayer(j),nTerms);
             [closeEqs,iLinkClose,targTrack]=numCloseToSeg(par,closeEqs,iLinkClose,prob,Kx,b2,c1,c2,c5,parents,inLayer);
