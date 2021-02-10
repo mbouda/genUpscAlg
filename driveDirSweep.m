@@ -52,7 +52,7 @@ for i=1:nFiles
             [plant(j).prob,plant(j).sol]=layerProbSol(j,collarCond,...
                 lyrArch,params,parents,inLayer);
         catch
-            warning(sprintf('Failed to uscale layer %d\n',j),'noUpsc');
+            warning(sprintf('Failed to upscale layer %d\n',j),'noUpsc');
             result(j,i)=-2;
             
             fldPrp=cell(1,1);

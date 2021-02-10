@@ -26,7 +26,7 @@ dataDir='./testing/crbTestSet/RLab_210209_plantSet/';
 % rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 %rsaFile='RLab_210115_workshop.vtp';
 %rsaFile=sprintf('RLab_210203_Triticum_aestivum_a_Bingham_2011_%ddenni_simulace.vtp',nDay);
-rsaFile=sprintf('RLab_210209_Noccaea_Pagès_2013_7denni_simulace.vtp');
+rsaFile=sprintf('RLab_210209_Triticum_aestivum_a_Bingham_2011_2denni_simulace.vtp');
 
 kx=5e-5;
 kr=1.5e-10;

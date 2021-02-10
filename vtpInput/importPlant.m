@@ -9,6 +9,7 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
     end
     
     vtPlant.cz(:,end)=vtPlant.cz(:,end)-max(vtPlant.cz(:,end));
+    vtPlant.cz(:,end)=round(1e8*vtPlant.cz(:,end))/1e8;
     %normalise root collar to 0 elevation, always
     
     zMin=floor(min(sum(vtPlant.cz,2)))/100;
@@ -16,6 +17,7 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
     zLims=(0:dz:zMin)';
     
     vtPlant=adjustVTPlant2(vtPlant);
+    vtPlant.cz=round(1e8*vtPlant.cz)/1e8;
     
     %[vtPlant.kr,vtPlant.kx]=genHydroConst(kr,kx,b,vtPlant.R);
     %should probably re-categorise  some of those fields into subfields of
@@ -34,6 +36,7 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
     else
         maxZ=max(max(vtPlant.cz(:,2),max(sum(vtPlant.cz,2))));
     end            
+    zLims=round(1e8*zLims)/1e8;
     
     if any(vtPlant.cz(vtPlant.parents==0,2)<maxZ)
         topEnd=sum(vtPlant.cz(vtPlant.parents==0,:),2);

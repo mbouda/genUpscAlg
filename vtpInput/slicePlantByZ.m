@@ -19,14 +19,16 @@ function newPlant=slicePlantByZ(plant,zLims,nLay)
 
     [parents,L,M,nL,cx,cy,cz,R,AX,kr,kx]=breakSegmentsToLayers(U,parents,L,M,nL,cx,cy,cz,R,AX,kr,kx);
     %should import this code here and make/use custom version
-
+    cz=round(1e8*cz)/1e8;
+    
     %would have to redo the next one to deal with just coefficients...
     
     [inLay,sameLay,crossLay]=linkLayersC(cz,zLims,nL,nLay); 
     %it may be these are counted as crossing even though they just end on
     %the boundary...
     zEnds=[cz(:,2) sum(cz,2)];
-
+    zEnds(:,2)=round(1e8*zEnds(:,2))/1e8;
+    
     crossLay=crossLay & ~(ismember(zEnds(:,1),zLims) | ismember(zEnds(:,2),zLims)); %ismember(cz(:,2),zLims);
 
     if any(crossLay)

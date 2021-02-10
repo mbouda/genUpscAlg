@@ -3,7 +3,11 @@ function  vtPlant=formPlantFromVTP(vtpRoot)
     crds=reshape(vtpRoot.Points.Coordinates.data,[str2double(vtpRoot.Points.Coordinates.NumberOfComponents) vtpRoot.Dimensions.NumberOfPoints])';
     offsets=vtpRoot.Lines.offsets.data';
     ptParents=vtpRoot.Lines.connectivity.data';
-    ranges=cat(2,cat(1,1,offsets(1:end-1)+1),offsets);
+    if size(offsets,1)>1
+        ranges=cat(2,cat(1,1,offsets(1:end-1)+1),offsets);
+    else
+        ranges=cat(2,1,offsets);
+    end
     nAxes=vtpRoot.Dimensions.NumberOfLines;
 
 
@@ -29,6 +33,7 @@ function  vtPlant=formPlantFromVTP(vtpRoot)
                 pt0=crds(j,:);
                 pt1=crds(j+1,:);
                 v=pt1-pt0;
+                v=round(1e6*v)/1e6; 
                 cx(count,3)=v(1);
                 cx(count,4)=pt0(1);
                 cy(count,3)=v(2);
