@@ -35,10 +35,10 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
         maxZ=max(max(vtPlant.cz(:,2),max(sum(vtPlant.cz,2))));
     end            
     
-    if vtPlant.cz(1,2)<maxZ
-        topEnd=sum(vtPlant.cz(1,:));
-        vtPlant.cz(1,2)=maxZ;
-        vtPlant.cz(1,1)=topEnd-maxZ;
+    if any(vtPlant.cz(vtPlant.parents==0,2)<maxZ)
+        topEnd=sum(vtPlant.cz(vtPlant.parents==0,:),2);
+        vtPlant.cz(vtPlant.parents==0,2)=maxZ;
+        vtPlant.cz(vtPlant.parents==0,1)=topEnd-maxZ;
         warning('Adjusting root collar to top of system','adjCol')
     end
     

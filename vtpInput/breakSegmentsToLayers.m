@@ -14,7 +14,8 @@ function [parents,L,M,nL,cx,cy,cz,r,AX,kr,kx]=breakSegmentsToLayers(nuBrk,parent
     kxBrk=[];
     krBrk=[];
     
-    midWf=zeros(nL,1);
+    %midWf=zeros(nL,1);
+    midWf=parents;
     for i=1:nL
         if any(nuBrk{i}~=0 & nuBrk{i}~=1) %this misses 0s (correctly) but collects 1s ...
             u=unique(cat(1,0,nuBrk{i},1));
