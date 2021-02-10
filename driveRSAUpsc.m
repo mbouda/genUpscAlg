@@ -19,21 +19,25 @@ resTol=1e-12; %relative tolerance on numerical residuals;
     %soft-test is passed in these cases; all pass if re-run: due to random
     %variation in parameters.
 %% File input, preprocessing
-dataDir='./testing/crbTestSet/';
+dataDir='./testing/crbTestSet/RLab_210209_plantSet/';
 
-nDay=10; %triticum: [6:3:15]
-
-rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
+% nDay=13; %triticum: [6:3:15]
+% 
+% rsaFile=sprintf('RLab_210119_Pisum_sativum_a_Pagès_2014_%ddenni_simulace.vtp',nDay);
 %rsaFile='RLab_210115_workshop.vtp';
 %rsaFile=sprintf('RLab_210203_Triticum_aestivum_a_Bingham_2011_%ddenni_simulace.vtp',nDay);
-
+rsaFile=sprintf('RLab_210209_Noccaea_Pagès_2013_7denni_simulace.vtp');
 
 kx=5e-5;
 kr=1.5e-10;
 b=100e-6;
-nLayInit=9;
+nLayInit=5;
 
 [plant,zMin,zLims,dz]=importPlant(strcat(dataDir,rsaFile),nLayInit,kr,kx,b); 
+
+if any(plant.params.c2==0)
+    warning('c2==0 for some links, leading to NaN solns\n likely due to L<1e-8','badL')
+end
 
 collarCond='psiC'; 
 
@@ -47,6 +51,13 @@ collarCond='psiC';
         'ints',fldPrp,'bots',fldPrp,'tops',fldPrp,'targ',fldPrp,'eqs',fldPrp);
     plant.sol=struct('kLayer',fldPrp,'coefs',fldPrp,'vars',fldPrp,'depvar',fldPrp);
     
+    %see if can find/solve a source of error in P. sat. nDay=13, j=2;
+        %all equations seem to be accurate. 
+        %so it should be in the solution strategy at the end.
+    %Noccaea 7-day, j=4:
+        %warning, reduction matrix singular, then resMax ~o 1e-4
+            %likely issue in solution strat at end(?)
+        %if make 5-layer problem, j=3 has maxRes 1.6e-3... may be bug in eqDef    
         
     tic
     for j=1:plant.nDomLayers
