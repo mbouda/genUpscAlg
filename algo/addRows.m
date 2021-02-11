@@ -29,7 +29,11 @@ function [cM,pres,varOrd,nRem,nT]=addRows(pres,cM,varOrd,isNot,nRem,nT,prob,pare
 
         if any(psiHang)
             for i=psiHang'
-                j=distalTipSrch(i,parents);
+                if any(parents==i)
+                    j=distalTipSrch(i,parents);
+                else
+                    j=i;
+                end
                 nTerms=size(j,1);
                 [closeEqs,iLinkClose]=numCloseTerms(j,b2(j),c1(j),c2(j),inLayer(j),nTerms);
                 [closeEqs,iLinkClose,~]=numCloseToSeg(parents(i),closeEqs,iLinkClose,prob,Kx,b2,c1,c2,c5,parents,inLayer);

@@ -12,9 +12,7 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
     vtPlant.cz(:,end)=round(1e8*vtPlant.cz(:,end))/1e8;
     %normalise root collar to 0 elevation, always
     
-    zMin=floor(min(sum(vtPlant.cz,2)))/100;
-    dz=zMin/nLayInit;
-    zLims=(0:dz:zMin)';
+    [zMin,zLims,dz]=setzLims(vtPlant,nLayInit,0,100);
     
     vtPlant=adjustVTPlant2(vtPlant);
     vtPlant.cz=round(1e8*vtPlant.cz)/1e8;
@@ -32,6 +30,10 @@ function [plant,zMin,zLims,dz]=importPlant(fileName,nLayInit,kr,kx,b)
         maxZ=max(cat(1,vtPlant.cz(:,2),sum(vtPlant.cz,2)));
         dz=(zMin-maxZ)/nLayInit;
         zLims=(maxZ:dz:zMin)'; %add maximum Z vertex to the layer limits
+        lowestZ=min(cat(1,vtPlant.cz(:,end),sum(vtPlant.cz,2)));
+        if sum(zLims<lowestZ)>1
+            [zMin,zLims,dz]=setzLims(vtPlant,nLayInit,maxZ,1);
+        end
         vtPlant.kr(anyPos)=0; %set kr any protruding segments to 0
     else
         maxZ=max(max(vtPlant.cz(:,2),max(sum(vtPlant.cz,2))));
