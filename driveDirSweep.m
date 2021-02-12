@@ -20,7 +20,7 @@ b=100e-6;
 nLayInit=8;
 collarCond='psiC'; 
 
-myPool=parpool(8); 
+myPool=parpool(6); 
 
 result=zeros(nLayInit,nFiles);
 
@@ -29,7 +29,7 @@ for i=1:nFiles
     fprintf(1,'Starting %s \n',fileNames{i});
     
     try
-        [plant,zMin,zLims,dz]=importPlant(strcat(dataDir,fileNames{i}),nLayInit,kr,kx,b); 
+        [plant,zMin,zLims,dz]=importPlant(strcat(dataDir,fileNames{i}),nLayInit,kr,kx,b);
     catch
         warning('Failed to import, skipping...\n','noImp')
         result(:,i)=-1;

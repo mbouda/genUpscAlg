@@ -158,6 +158,31 @@ function layerEqs=compLayerEqs(iLayer,layerEqs,prob,b2,c1,c2,c5,Kx,inLayer,paren
                                termed,parents,inLayer);
     end
     
+    %here, check if have vars0 of hanging tops
+    %and send back up if necessary
+    for i=1:size(hookEqs,1)
+        iSeg=str2double(hookEqs(i).depvar(5:end));
+        for j=1:nLayers
+            if any(endsWith(layerEqs(j).vars,sprintf('0%d',iSeg)))
+                if ismember(sprintf('G0%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
+                    layerEqs(j)=numPassUp(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+                    layerEqs(j)=subsFor(layerEqs(j),closeEqs(iLinkClose==iSeg).depvar,...
+                        closeEqs(iLinkClose==iSeg).vars,closeEqs(iLinkClose==iSeg).coefs);
+                    layerEqs(j)=sumVars(layerEqs(j));
+                elseif ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
+                    layerEqs(j)=numPassUpG(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg));
+                    layerEqs(j)=subsFor(layerEqs(j),closeEqs(iLinkClose==iSeg).depvar,...
+                        closeEqs(iLinkClose==iSeg).vars,closeEqs(iLinkClose==iSeg).coefs);
+                    layerEqs(j)=sumVars(layerEqs(j));
+                elseif ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
+                    layerEqs(j)=numPassUpPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
+                    layerEqs(j)=subsFor(layerEqs(j),closeEqs(iLinkClose==iSeg).depvar,...
+                        closeEqs(iLinkClose==iSeg).vars,closeEqs(iLinkClose==iSeg).coefs);
+                    layerEqs(j)=sumVars(layerEqs(j));                    
+                end
+            end
+        end
+    end
     %HERE add hookEqs to layerEqs
     layerEqs=cat(1,layerEqs,hookEqs);
     nLayers=size(layerEqs,1);

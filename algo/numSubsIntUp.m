@@ -26,8 +26,7 @@ function [layerEqs,prob,nLayers]=numSubsIntUp(iSeg,prob,closeEqs,iLinkClose,extr
             if ismember(sprintf('G0%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
                 layerEqs(j)=numPassUp(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
             elseif ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
-                %pass up G0
-                keyboard  %function does not yet exist
+                layerEqs(j)=numPassUpG(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg));
             elseif ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
                 %pass up psi0
                 layerEqs(j)=numPassUpPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
@@ -69,8 +68,7 @@ function [layerEqs,prob,nLayers]=numSubsIntUp(iSeg,prob,closeEqs,iLinkClose,extr
                 if ismember(sprintf('G0%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
                     layerEqs(j)=numPassUp(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
                 elseif ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
-                    %pass up G0
-                    keyboard  %function does not yet exist
+                    layerEqs(j)=numPassUpG(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg));
                 elseif ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
                     %pass up psi0
                     layerEqs(j)=numPassUpPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
@@ -108,8 +106,7 @@ function [layerEqs,prob,nLayers]=numSubsIntUp(iSeg,prob,closeEqs,iLinkClose,extr
                 if ismember(sprintf('G0%d',iSeg),layerEqs(j).vars) && ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
                     layerEqs(j)=numPassUp(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
                 elseif ismember(sprintf('G0%d',iSeg),layerEqs(j).vars)
-                    %pass up G0
-                    keyboard  %function does not yet exist
+                    layerEqs(j)=numPassUpG(layerEqs(j),iSeg,inLayer(iSeg),b2(iSeg),c1(iSeg),c2(iSeg));
                 elseif ismember(sprintf('psi0%d',iSeg),layerEqs(j).vars)
                     %pass up psi0
                     layerEqs(j)=numPassUpPsi(layerEqs(j),iSeg,inLayer(iSeg),c1(iSeg),c2(iSeg),c5(iSeg));
