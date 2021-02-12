@@ -1,0 +1,38 @@
+<?xml version="1.0"?><VTKFile type="PolyData" version="0.1" byte_order="LittleEndian">
+<PolyData>
+<Piece NumberOfLines="4" NumberOfPoints="27">
+<PointData Scalars=" PointData">
+<DataArray type="Float32" Name="time" NumberOfComponents="1" format="ascii" >
+0 0.250348 0.60201 0.955052 1.30949 1.66532 2.02257 2.38124 2.74135 3.10291 3.46592 3.83041 4.19638 4.56385 4.93282 5.30331 5.67533 6 5.22379 5.56875 5.93929 6 5.59548 5.94045 6 5.96872 6 
+</DataArray>
+
+</PointData>
+<CellData Scalars=" CellData">
+<DataArray type="Float32" Name="radius" NumberOfComponents="1" format="ascii" >
+0.13 0.0443867 0.0443477 0.0581744 
+</DataArray>
+<DataArray type="Float32" Name="subType" NumberOfComponents="1" format="ascii" >
+1 2 2 2 
+</DataArray>
+<DataArray type="Float32" Name="creationTime" NumberOfComponents="1" format="ascii" >
+0 5.22379 5.59548 5.96872 
+</DataArray>
+
+</CellData>
+<Points>
+<DataArray type="Float32" Name="Coordinates" NumberOfComponents="3" format="ascii" >
+0 0 -3 0.0155571 -0.0043687 -3.49974 0.0507807 0.000115538 -4.19884 0.0510154 -0.0130774 -4.89871 0.0407175 -0.0455815 -5.59788 0.0207712 -0.0757162 -6.29695 -0.0104753 -0.0635398 -6.99615 -0.045381 -0.0612502 -7.69527 -0.0642859 -0.0536165 -8.39497 -0.0692685 0.0144853 -9.09164 -0.123973 0.0609958 -9.78794 -0.175324 0.0845153 -10.4857 -0.254775 0.0804369 -11.1811 -0.276661 0.0786942 -11.8808 -0.26883 0.0974196 -12.5805 -0.226634 0.123061 -13.2787 -0.146502 0.125969 -13.9741 -0.0705122 0.132048 -14.5779 0.0155571 -0.0043687 -3.49974 -0.681288 -0.581272 -3.92587 -1.25886 -1.15351 -4.50807 -1.35197 -1.24091 -4.59919 0.0507807 0.000115538 -4.19884 1.02718 0.197447 -4.28666 1.18807 0.233012 -4.30458 0.0510154 -0.0130774 -4.89871 0.116006 -0.0783519 -4.91501 
+</DataArray>
+</Points>
+<Lines>
+<DataArray type="Int32" Name="connectivity" NumberOfComponents="1" format="ascii" >
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 
+</DataArray>
+<DataArray type="Int32" Name="offsets" NumberOfComponents="1" format="ascii" >
+18 22 25 27 
+</DataArray>
+
+</Lines>
+</Piece>
+</PolyData>
+</VTKFile>

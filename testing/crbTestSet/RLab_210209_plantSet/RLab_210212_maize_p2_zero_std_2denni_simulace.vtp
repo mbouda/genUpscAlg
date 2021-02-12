@@ -1,0 +1,38 @@
+<?xml version="1.0"?><VTKFile type="PolyData" version="0.1" byte_order="LittleEndian">
+<PolyData>
+<Piece NumberOfLines="1" NumberOfPoints="24">
+<PointData Scalars=" PointData">
+<DataArray type="Float32" Name="time" NumberOfComponents="1" format="ascii" >
+0 0.128339 0.256945 0.385821 0.514967 0.644385 0.774075 0.904038 1.03428 1.16479 1.29558 1.42665 1.558 1.68963 1.82154 1.95374 2.08622 2.21898 2.35204 2.48538 2.61901 2.75293 2.88714 3 
+</DataArray>
+
+</PointData>
+<CellData Scalars=" CellData">
+<DataArray type="Float32" Name="radius" NumberOfComponents="1" format="ascii" >
+0.13 
+</DataArray>
+<DataArray type="Float32" Name="subType" NumberOfComponents="1" format="ascii" >
+1 
+</DataArray>
+<DataArray type="Float32" Name="creationTime" NumberOfComponents="1" format="ascii" >
+0 
+</DataArray>
+
+</CellData>
+<Points>
+<DataArray type="Float32" Name="Coordinates" NumberOfComponents="3" format="ascii" >
+0 0 -1.2 -0.276193 -0.380535 -1.37003 -0.546967 -0.763556 -1.54317 -0.817616 -1.14888 -1.71132 -1.08496 -1.53515 -1.88255 -1.393 -1.89785 -2.03605 -1.68788 -2.28227 -2.15963 -1.97246 -2.66169 -2.31789 -2.26421 -3.0573 -2.40942 -2.57311 -3.43792 -2.50797 -2.86979 -3.82453 -2.6198 -3.19752 -4.1713 -2.76928 -3.50513 -4.54033 -2.90784 -3.8038 -4.92229 -3.02991 -4.10757 -5.29887 -3.15604 -4.41119 -5.67573 -3.28171 -4.69892 -6.05872 -3.42499 -4.96135 -6.45678 -3.57559 -5.18993 -6.85979 -3.76356 -5.40834 -7.26339 -3.96207 -5.63514 -7.65902 -4.16709 -5.83218 -8.06849 -4.3757 -6.01562 -8.49125 -4.56966 -6.16991 -8.84562 -4.73305 
+</DataArray>
+</Points>
+<Lines>
+<DataArray type="Int32" Name="connectivity" NumberOfComponents="1" format="ascii" >
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 
+</DataArray>
+<DataArray type="Int32" Name="offsets" NumberOfComponents="1" format="ascii" >
+24 
+</DataArray>
+
+</Lines>
+</Piece>
+</PolyData>
+</VTKFile>
