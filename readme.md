@@ -1,11 +1,9 @@
 # genUpscAlg
 
-The code in this repository (run from the driveGenAlgTest.m script) performs a series of tests comparing upscaled solutions to full-network solutions for several simple, synthetic networks.
+Copyright to all source code in this repository is retained by the author. This work is licensed under a Creative Commons Attribution CC-BY-NC-SA 4.0 International License. The full terms and conditions of the license can be found here: https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.
 
-One funciton called but not included is popJCMP.m, which is contained in the dropbox folder exactKcomp/martinCode, maintained by Jan Vanderborght at Juelich.
+The code in this repository (run from the driveGenAlgTest.m script) performs a series of tests comparing upscaled solutions to full-network solutions for several synthetic networks generated with CPlantBox (https://github.com/Plant-Root-Soil-Interactions-Modelling/CPlantBox). The code currently runs without error on all testing examples included here. 
 
-Generality and efficiency issues are noted in the issues section of the repository. It can be shown theoretically that all generality issues can be overcome.
+Further generality and efficiency issues are noted in the issues section of the repository. It can be shown theoretically that all known generality issues can be overcome. The algorithm can be beta-tested (or used) on root systems not included in the test set (formated as vtp outputs from CPlantBox) from the driveRSAUpsc.m script. 
 
-An important analytical (theoretical) result contained in the mbouda/synth repository (in the file "symCombPsiS.m") is a proof that the present upscaling approach can be extended to cases where soil water potential is not uniform within a soil 'layer' (or region, more broadly). In this case, so long as a (weighted\*) average soil water potential is used, the upscaling is possible (numerical code not included here). If performed, the resulting calculations with upscaled parameters will yield correct values for (weighted\*) mean xylem water potentials in a region and the resulting flows.
-
-\*weights are the total radial conductance of each root segment, so Kr\*S, where Kr is the soil-root conductance per unit length and S is the total segment length.
+Comments, requests, and use in beta-testing mode is welcome; please contact the author at martin.bouda@ibot.cas.cz with any queries.
